@@ -6,23 +6,19 @@
 <div class="wrapper wrapper-content animated fadeInRight">
     @include('shared.alerts')
     <div class="ibox">
-        <div class="ibox-title"><h5>Transaksi</h5></div>
+        <div class="ibox-title">
+            <h5>Transaksi</h5>
+            <div class="ibox-tools">
+                <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#transactionModal">
+                    <i class="fa fa-plus"></i> Tambah Transaksi
+                </button>
+            </div>
+        </div>
         <div class="ibox-content">
             <form method="GET" class="row m-b">
                 <div class="col-sm-3"><input type="month" name="month" class="form-control" value="{{ $month }}"></div>
                 <div class="col-sm-2"><button class="btn btn-white"><i class="fa fa-filter"></i> Filter</button></div>
                 <div class="col-sm-7 text-right"><h3 class="m-n">Total Bulan Ini: Rp {{ number_format($total, 0, ',', '.') }}</h3></div>
-            </form>
-            <form method="POST" action="{{ route('transactions.store') }}" class="row m-b" id="transactionForm">@csrf
-                <div class="col-sm-3"><select name="customer_id" id="transactionCustomer" class="form-control select2" required><option value="">Pilih pelanggan</option>@foreach($customers as $customer)<option value="{{ $customer->id }}" data-price="{{ $customer->effectivePrice() }}">{{ $customer->name }} - Rp {{ number_format($customer->effectivePrice(), 0, ',', '.') }}</option>@endforeach</select></div>
-                <div class="col-sm-2"><select name="delivery_run_id" class="form-control select2"><option value="">Mobil berjalan</option>@foreach($deliveryRuns as $run)<option value="{{ $run->id }}">{{ $run->label() }}</option>@endforeach</select></div>
-                <div class="col-sm-2"><input name="qty" type="number" min="1" class="form-control" value="1" required></div>
-                <div class="col-sm-2"><input name="price" id="transactionPrice" type="number" min="0" class="form-control" placeholder="Harga" required></div>
-                <div class="col-sm-2"><input name="created_at" id="transactionTime" type="datetime-local" class="form-control" value="{{ $serverNow }}"></div>
-                <div class="col-sm-1"><button class="btn btn-primary btn-block"><i class="fa fa-plus"></i></button></div>
-                <div class="col-sm-12 m-t-xs">
-                    <label><input type="checkbox" name="use_server_time" id="transactionUseServerTime" value="1" checked> Gunakan waktu server</label>
-                </div>
             </form>
             <div class="table-responsive">
                 <table class="table table-striped">
@@ -52,6 +48,15 @@
         </div>
     </div>
 </div>
+
+@include('transactions._modal-form', [
+    'modalId' => 'transactionModal',
+    'formId' => 'transactionForm',
+    'customerSelectId' => 'transactionCustomer',
+    'priceInputId' => 'transactionPrice',
+    'timeInputId' => 'transactionTime',
+    'useServerId' => 'transactionUseServerTime',
+])
 @endsection
 
 @section('scripts')
@@ -66,7 +71,7 @@
         customer.on('change', function () {
             const selectedPrice = customer.find(':selected').data('price');
             if (selectedPrice !== undefined) {
-                price.value = selectedPrice;
+                price.value = window.SelowaMoney ? window.SelowaMoney.format(selectedPrice) : selectedPrice;
             }
         });
 

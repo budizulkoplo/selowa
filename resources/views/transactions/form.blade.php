@@ -20,7 +20,7 @@
             </div>
             <div class="row">
                 <div class="col-sm-4 form-group"><label>Qty</label><input name="qty" type="number" min="1" class="form-control" value="{{ $transaction->qty }}" required></div>
-                <div class="col-sm-4 form-group"><label>Harga</label><input name="price" type="number" min="0" class="form-control" value="{{ $transaction->price }}" required></div>
+                <div class="col-sm-4 form-group"><label>Harga</label><input name="price" type="text" inputmode="numeric" class="form-control money-input" value="{{ $transaction->price }}" required></div>
                 <div class="col-sm-4 form-group"><label>Tanggal</label><input name="created_at" type="datetime-local" class="form-control" value="{{ $transaction->created_at?->format('Y-m-d\\TH:i') }}"></div>
             </div>
             <a href="{{ route('transactions.index') }}" class="btn btn-white">Kembali</a>

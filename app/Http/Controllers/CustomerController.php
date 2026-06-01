@@ -62,6 +62,11 @@ class CustomerController extends Controller
 
     private function validated(Request $request): array
     {
+        $request->merge([
+            'customer_price' => $this->numericValue($request->input('customer_price')),
+            'discount_value' => $this->numericValue($request->input('discount_value')),
+        ]);
+
         return $request->validate([
             'name' => ['required', 'string', 'max:100'],
             'phone' => ['nullable', 'string', 'max:30'],
@@ -80,5 +85,10 @@ class CustomerController extends Controller
             'discount_type' => 'none',
             'discount_value' => 0,
         ];
+    }
+
+    private function numericValue(mixed $value): int
+    {
+        return (int) preg_replace('/\D+/', '', (string) $value);
     }
 }

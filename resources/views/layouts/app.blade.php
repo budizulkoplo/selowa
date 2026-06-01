@@ -11,6 +11,26 @@
     <link rel="stylesheet" href="{!! asset('css/app.css') !!}" />
     <link rel="stylesheet" href="{{ asset('css/plugins/dataTables/datatables.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('css/plugins/select2/select2.min.css') }}" />
+    <style>
+        .select2-container--default .select2-selection--single {
+            height: 34px;
+            border: 1px solid #e5e6e7;
+            border-radius: 1px;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 32px;
+            padding-left: 12px;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 32px;
+        }
+
+        .modal .select2-container {
+            width: 100% !important;
+        }
+    </style>
 
 </head>
 <body>
@@ -69,13 +89,60 @@
             });
 
             if ($.fn.select2) {
-                $('select.form-control, select.select2').select2({
-                    width: '100%',
-                    placeholder: function () {
-                        return $(this).find('option:first').text();
-                    }
+                $('select.form-control, select.select2').each(function () {
+                    const $select = $(this);
+                    const $modal = $select.closest('.modal');
+
+                    $select.select2({
+                        width: '100%',
+                        dropdownParent: $modal.length ? $modal : $(document.body),
+                        placeholder: function () {
+                            return $(this).find('option:first').text();
+                        }
+                    });
                 });
             }
+
+            window.SelowaMoney = {
+                digits(value) {
+                    return String(value || '').replace(/\D+/g, '');
+                },
+                format(value) {
+                    const digits = this.digits(value);
+
+                    return digits.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+                },
+                bind(root) {
+                    const scope = root || document;
+
+                    scope.querySelectorAll('.money-input').forEach((input) => {
+                        if (input.dataset.moneyBound === '1') {
+                            return;
+                        }
+
+                        input.dataset.moneyBound = '1';
+                        input.value = this.format(input.value);
+                        input.addEventListener('input', () => {
+                            input.value = this.format(input.value);
+                        });
+                    });
+
+                    scope.querySelectorAll('form').forEach((form) => {
+                        if (form.dataset.moneySubmitBound === '1') {
+                            return;
+                        }
+
+                        form.dataset.moneySubmitBound = '1';
+                        form.addEventListener('submit', () => {
+                            form.querySelectorAll('.money-input').forEach((input) => {
+                                input.value = this.digits(input.value);
+                            });
+                        });
+                    });
+                }
+            };
+
+            window.SelowaMoney.bind(document);
 
             if ($.fn.DataTable) {
                 $('table.table').not('.no-datatable').each(function () {
@@ -86,6 +153,7 @@
                     $(this).DataTable({
                         pageLength: 25,
                         responsive: true,
+                        order: [],
                         language: {
                             search: 'Cari:',
                             lengthMenu: 'Tampilkan _MENU_ data',

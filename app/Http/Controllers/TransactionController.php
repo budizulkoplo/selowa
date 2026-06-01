@@ -42,6 +42,7 @@ class TransactionController extends Controller
     {
         $data = $this->validated($request);
         $data['created_at'] = $request->boolean('use_server_time') ? now() : ($data['created_at'] ?? now());
+        $data['customer_name_snapshot'] = Customer::whereKey($data['customer_id'])->value('name');
         unset($data['use_server_time']);
 
         Transaction::create($data + [
@@ -80,6 +81,10 @@ class TransactionController extends Controller
 
     private function validated(Request $request): array
     {
+        $request->merge([
+            'price' => $this->numericValue($request->input('price')),
+        ]);
+
         return $request->validate([
             'customer_id' => ['required', 'exists:customers,id'],
             'delivery_run_id' => ['nullable', 'exists:delivery_runs,id'],
@@ -88,6 +93,11 @@ class TransactionController extends Controller
             'created_at' => ['nullable', 'date'],
             'use_server_time' => ['nullable', 'boolean'],
         ]);
+    }
+
+    private function numericValue(mixed $value): int
+    {
+        return (int) preg_replace('/\D+/', '', (string) $value);
     }
 
     private function deliveryRuns()
