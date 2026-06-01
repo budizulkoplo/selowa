@@ -47,6 +47,7 @@ Route::middleware('checklogin')->group(function (): void {
     Route::resource('transactions', TransactionController::class)->except(['show', 'create']);
     Route::get('/delivery-runs', [DeliveryRunController::class, 'index'])->name('delivery-runs.index');
     Route::post('/delivery-runs/vehicles', [DeliveryRunController::class, 'storeVehicle'])->name('delivery-runs.vehicles.store');
+    Route::post('/delivery-runs/routes', [DeliveryRunController::class, 'storeRoute'])->name('delivery-runs.routes.store');
     Route::post('/delivery-runs', [DeliveryRunController::class, 'store'])->name('delivery-runs.store');
     Route::put('/delivery-runs/{deliveryRun}', [DeliveryRunController::class, 'update'])->name('delivery-runs.update');
     Route::delete('/delivery-runs/{deliveryRun}', [DeliveryRunController::class, 'destroy'])->name('delivery-runs.destroy');

@@ -33,7 +33,7 @@ class DatabaseSeeder extends Seeder
         $owner->assignRole('owner');
 
         Company::firstOrCreate(['id' => 1], ['name' => 'Selowa']);
-        DeliveryVehicle::firstOrCreate(['name' => 'Mobil 1'], ['is_active' => true]);
+        DeliveryVehicle::updateOrCreate(['name' => 'Mobil 1'], ['user_id' => $owner->id, 'is_active' => true]);
 
         Menu::where('title', 'Hak Akses')->whereNull('parent_id')->update(['title' => 'Setting']);
         Menu::where('title', 'Master Data')->whereNull('parent_id')->update(['title' => 'Data Master']);

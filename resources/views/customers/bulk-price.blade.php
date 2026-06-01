@@ -19,10 +19,17 @@
             <p class="text-muted">Gunakan tombol update untuk mengubah harga semua pelanggan aktif, pelanggan pada desa tertentu, atau pelanggan dengan harga lama tertentu.</p>
             <div class="table-responsive">
                 <table class="table table-striped">
-                    <thead><tr><th>Harga Saat Ini</th></tr></thead>
+                    <thead><tr><th>Harga Saat Ini</th><th class="text-right">Aksi</th></tr></thead>
                     <tbody>
                         @foreach ($currentPrices as $price)
-                            <tr><td>Rp {{ number_format($price, 0, ',', '.') }}</td></tr>
+                            <tr>
+                                <td>Rp {{ number_format($price, 0, ',', '.') }}</td>
+                                <td class="text-right">
+                                    <button type="button" class="btn btn-white btn-sm bulk-price-pick" data-price="{{ $price }}">
+                                        <i class="fa fa-pencil"></i> Update harga ini
+                                    </button>
+                                </td>
+                            </tr>
                         @endforeach
                     </tbody>
                 </table>
@@ -65,7 +72,7 @@
                         </div>
                         <div class="col-md-4 form-group" id="oldPriceGroup">
                             <label>Harga Lama</label>
-                            <select name="old_price" class="form-control">
+                            <select name="old_price" id="bulkOldPrice" class="form-control">
                                 <option value="">Pilih harga lama</option>
                                 @foreach ($currentPrices as $price)
                                     <option value="{{ $price }}">Rp {{ number_format($price, 0, ',', '.') }}</option>
@@ -108,6 +115,15 @@
         };
 
         mode.addEventListener('change', sync);
+        $('.bulk-price-pick').on('click', function () {
+            mode.value = 'price';
+            $('#bulkOldPrice').val(this.dataset.price).trigger('change');
+            sync();
+
+            if (window.SelowaModal) {
+                window.SelowaModal.show('#bulkPriceModal');
+            }
+        });
         sync();
     }());
 </script>

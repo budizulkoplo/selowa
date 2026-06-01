@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class DeliveryRun extends Model
 {
-    protected $fillable = ['delivery_vehicle_id', 'run_date', 'driver_name', 'area', 'notes', 'status'];
+    protected $fillable = ['delivery_vehicle_id', 'delivery_route_id', 'run_date', 'driver_name', 'area', 'notes', 'status'];
 
     protected function casts(): array
     {
@@ -20,6 +20,11 @@ class DeliveryRun extends Model
         return $this->belongsTo(DeliveryVehicle::class, 'delivery_vehicle_id');
     }
 
+    public function route(): BelongsTo
+    {
+        return $this->belongsTo(DeliveryRoute::class, 'delivery_route_id');
+    }
+
     public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class);
@@ -27,6 +32,6 @@ class DeliveryRun extends Model
 
     public function label(): string
     {
-        return $this->run_date?->format('d/m/Y').' - '.$this->vehicle?->name.' - '.($this->driver_name ?: $this->vehicle?->driver_name ?: '-');
+        return $this->run_date?->format('d/m/Y').' - '.$this->vehicle?->name.' - '.($this->driver_name ?: $this->vehicle?->driverLabel() ?: '-').' - '.($this->area ?: $this->route?->name ?: '-');
     }
 }

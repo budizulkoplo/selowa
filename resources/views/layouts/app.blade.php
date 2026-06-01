@@ -31,6 +31,11 @@
             width: 100% !important;
         }
 
+        .select2-container--open,
+        .select2-dropdown {
+            z-index: 20600 !important;
+        }
+
         body > .modal {
             z-index: 20550 !important;
         }
@@ -131,6 +136,24 @@
                     modal.scrollTop = 0;
                     modal.classList.add('in');
                     modal.dataset.selowaOpen = '1';
+
+                    if ($.fn.select2) {
+                        $(modal).find('select.form-control, select.select2').each(function () {
+                            const $select = $(this);
+
+                            if ($select.data('select2')) {
+                                $select.select2('destroy');
+                            }
+
+                            $select.select2({
+                                width: '100%',
+                                dropdownParent: $(modal),
+                                placeholder: function () {
+                                    return $(this).find('option:first').text();
+                                }
+                            });
+                        });
+                    }
 
                     setTimeout(() => {
                         const firstInput = modal.querySelector('select, input, textarea, button');

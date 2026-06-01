@@ -56,6 +56,7 @@ User awal:
 - `Setting` berisi Company, Role, Menu, dan Role Menu.
 - Diskon member disimpan di tabel `customers` melalui kolom `is_member`, `discount_type`, dan `discount_value`; harga transaksi default memakai harga efektif setelah diskon.
 - Pengiriman harian memakai `delivery_vehicles` dan `delivery_runs`; transaksi dapat dihubungkan ke jadwal mobil berjalan.
+- Perencanaan pengiriman memakai `delivery_routes`: mobil melekat ke admin/user, lalu dibuat rute mingguan per hari. Satu hari dapat memiliki lebih dari satu mobil berjalan dengan rute berbeda dan laporan transaksi masing-masing.
 
 ## Alur Lanjutan
 
