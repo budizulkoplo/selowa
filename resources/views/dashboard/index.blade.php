@@ -31,7 +31,7 @@
         <div class="ibox-title">
             <h5>Buat Transaksi</h5>
             <div class="ibox-tools">
-                <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#dashboardTransactionModal"><i class="fa fa-plus"></i> Input Transaksi</button>
+                <button type="button" class="btn btn-primary btn-xs" data-selowa-modal="#dashboardTransactionModal"><i class="fa fa-plus"></i> Input Transaksi</button>
                 <a href="{{ route('transactions.index') }}" class="btn btn-white btn-xs"><i class="fa fa-list"></i> Daftar Transaksi</a>
             </div>
         </div>
@@ -128,7 +128,11 @@
         $('#dashboardCustomerTable tbody').on('click', 'tr.customer-picker-row', function () {
             customerSelect.val(this.dataset.customerId).trigger('change');
             priceInput.value = window.SelowaMoney ? window.SelowaMoney.format(this.dataset.price || '') : (this.dataset.price || '');
-            $('#dashboardTransactionModal').modal('show');
+            if (window.SelowaModal) {
+                window.SelowaModal.show('#dashboardTransactionModal');
+            } else {
+                $('#dashboardTransactionModal').modal('show');
+            }
         });
 
         if (useServerTime && timeInput) {

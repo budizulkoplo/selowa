@@ -10,7 +10,7 @@
         <div class="ibox-title">
             <h5>Update Harga Pelanggan Serentak</h5>
             <div class="ibox-tools">
-                <button type="button" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#bulkPriceModal">
+                <button type="button" class="btn btn-warning btn-xs" data-selowa-modal="#bulkPriceModal">
                     <i class="fa fa-refresh"></i> Update Harga
                 </button>
             </div>

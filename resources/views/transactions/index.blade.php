@@ -9,7 +9,7 @@
         <div class="ibox-title">
             <h5>Transaksi</h5>
             <div class="ibox-tools">
-                <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#transactionModal">
+                <button type="button" class="btn btn-primary btn-xs" data-selowa-modal="#transactionModal">
                     <i class="fa fa-plus"></i> Tambah Transaksi
                 </button>
             </div>

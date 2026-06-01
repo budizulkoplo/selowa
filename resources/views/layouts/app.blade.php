@@ -42,6 +42,10 @@
         .modal-backdrop {
             z-index: 20540 !important;
         }
+
+        .selowa-modal-open {
+            overflow: hidden;
+        }
     </style>
 
 </head>
@@ -99,6 +103,87 @@
                 if ($('.modal.in').length === 0) {
                     $('.modal-backdrop').remove();
                     $('body').removeClass('modal-open');
+                }
+            });
+
+            window.SelowaModal = {
+                show(target) {
+                    const modal = typeof target === 'string' ? document.querySelector(target) : target;
+
+                    if (!modal) {
+                        return;
+                    }
+
+                    if (modal.parentNode !== document.body) {
+                        document.body.appendChild(modal);
+                    }
+
+                    document.querySelectorAll('.modal-backdrop').forEach((backdrop) => backdrop.remove());
+
+                    const backdrop = document.createElement('div');
+                    backdrop.className = 'modal-backdrop fade in selowa-backdrop';
+                    document.body.appendChild(backdrop);
+
+                    document.body.classList.add('modal-open', 'selowa-modal-open');
+                    modal.style.display = 'block';
+                    modal.removeAttribute('aria-hidden');
+                    modal.setAttribute('aria-modal', 'true');
+                    modal.scrollTop = 0;
+                    modal.classList.add('in');
+                    modal.dataset.selowaOpen = '1';
+
+                    setTimeout(() => {
+                        const firstInput = modal.querySelector('select, input, textarea, button');
+
+                        if (firstInput) {
+                            firstInput.focus({ preventScroll: true });
+                        }
+                    }, 50);
+                },
+                hide(target) {
+                    const modal = typeof target === 'string' ? document.querySelector(target) : target;
+
+                    if (!modal) {
+                        return;
+                    }
+
+                    modal.classList.remove('in');
+                    modal.style.display = 'none';
+                    modal.setAttribute('aria-hidden', 'true');
+                    modal.removeAttribute('aria-modal');
+                    delete modal.dataset.selowaOpen;
+
+                    document.querySelectorAll('.modal-backdrop').forEach((backdrop) => backdrop.remove());
+
+                    if (document.querySelectorAll('.modal.in').length === 0) {
+                        document.body.classList.remove('modal-open', 'selowa-modal-open');
+                    }
+                }
+            };
+
+            $(document).on('click', '[data-selowa-modal]', function (event) {
+                event.preventDefault();
+                window.SelowaModal.show(this.getAttribute('data-selowa-modal'));
+            });
+
+            $(document).on('click', '.modal[data-selowa-open="1"] [data-dismiss="modal"]', function (event) {
+                event.preventDefault();
+                window.SelowaModal.hide($(this).closest('.modal')[0]);
+            });
+
+            $(document).on('click', '.modal[data-selowa-open="1"]', function (event) {
+                if (event.target === this) {
+                    window.SelowaModal.hide(this);
+                }
+            });
+
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape') {
+                    const openModal = document.querySelector('.modal[data-selowa-open="1"]');
+
+                    if (openModal) {
+                        window.SelowaModal.hide(openModal);
+                    }
                 }
             });
 
