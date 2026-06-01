@@ -30,6 +30,18 @@
         .modal .select2-container {
             width: 100% !important;
         }
+
+        body > .modal {
+            z-index: 20550 !important;
+        }
+
+        body > .modal .modal-dialog {
+            z-index: 20560 !important;
+        }
+
+        .modal-backdrop {
+            z-index: 20540 !important;
+        }
     </style>
 
 </head>
@@ -74,6 +86,21 @@
             if ($.fn && $.fn.metisMenu) {
                 $('#side-menu').metisMenu();
             }
+
+            $(document).on('show.bs.modal', '.modal', function () {
+                const $modal = $(this);
+
+                if (! $modal.parent().is('body')) {
+                    $modal.appendTo(document.body);
+                }
+            });
+
+            $(document).on('hidden.bs.modal', '.modal', function () {
+                if ($('.modal.in').length === 0) {
+                    $('.modal-backdrop').remove();
+                    $('body').removeClass('modal-open');
+                }
+            });
 
             document.addEventListener('click', function (event) {
                 if (window.innerWidth > 768 || !document.body.classList.contains('mini-navbar')) {
