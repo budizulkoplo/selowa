@@ -173,9 +173,110 @@
             margin: 8px auto 0;
         }
         @media (max-width: 760px) {
-            .login-wrap { display: block; min-height: auto; }
-            .login-info { padding: 30px; }
-            .login-panel { padding: 32px 24px; }
+            body {
+                background: #f3fbf8;
+            }
+
+            .login-shell {
+                min-height: 100svh;
+                align-items: flex-start;
+                padding: 16px 12px;
+                background: linear-gradient(180deg, #dff5ef 0%, #f8fcff 100%);
+            }
+
+            .login-wrap {
+                display: block;
+                max-width: 430px;
+                min-height: auto;
+                border-radius: 10px;
+                box-shadow: 0 16px 34px rgba(6, 44, 69, .18);
+            }
+
+            .login-info {
+                padding: 22px 22px 20px;
+                min-height: 132px;
+            }
+
+            .login-info:after {
+                width: 180px;
+                height: 180px;
+                right: -90px;
+                bottom: -90px;
+            }
+
+            .gallon-row {
+                display: none;
+            }
+
+            .login-info h1 {
+                font-size: 31px;
+                margin-bottom: 8px;
+            }
+
+            .login-info p {
+                font-size: 14px;
+                line-height: 1.45;
+                max-width: 300px;
+            }
+
+            .login-panel {
+                padding: 24px 20px 22px;
+            }
+
+            .brand-logo-small {
+                width: 150px;
+                height: 70px;
+                margin-bottom: 8px;
+            }
+
+            .login-panel h1 {
+                font-size: 21px;
+                margin-bottom: 4px;
+            }
+
+            .login-panel .subtitle {
+                margin-bottom: 18px;
+                font-size: 13px;
+            }
+
+            .form-group {
+                margin-bottom: 14px;
+            }
+
+            .form-control,
+            .btn-login {
+                height: 44px;
+                font-size: 15px;
+            }
+
+            .checkbox {
+                margin-top: 0;
+                margin-bottom: 14px;
+            }
+
+            .developer-signature {
+                margin-top: 18px;
+                padding-top: 14px;
+            }
+
+            .developer-signature img {
+                max-width: 116px;
+                max-height: 36px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .login-shell {
+                padding: 10px 8px;
+            }
+
+            .login-info {
+                padding: 18px;
+            }
+
+            .login-panel {
+                padding: 20px 16px;
+            }
         }
     </style>
 </head>

@@ -55,6 +55,19 @@
                 $('#side-menu').metisMenu();
             }
 
+            document.addEventListener('click', function (event) {
+                if (window.innerWidth > 768 || !document.body.classList.contains('mini-navbar')) {
+                    return;
+                }
+
+                const sidebar = document.querySelector('.navbar-static-side');
+                const toggle = document.querySelector('.navbar-minimalize');
+
+                if (sidebar && !sidebar.contains(event.target) && toggle && !toggle.contains(event.target)) {
+                    document.body.classList.remove('mini-navbar');
+                }
+            });
+
             if ($.fn.select2) {
                 $('select.form-control, select.select2').select2({
                     width: '100%',

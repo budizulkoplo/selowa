@@ -1,5 +1,5 @@
 <style>
-    @media (min-width: 769px) {
+    @media (min-width: 992px) {
         body:not(.mini-navbar) .navbar-static-side {
             width: 260px;
         }
@@ -60,70 +60,144 @@
         color: #9ea6b3;
     }
 
+    @media (max-width: 991px) {
+        body:not(.mini-navbar) #page-wrapper {
+            margin-left: 0;
+        }
+    }
+
     @media (max-width: 768px) {
-        body:not(.mini-navbar) #page-wrapper,
-        body.body-small:not(.mini-navbar) #page-wrapper {
-            margin-left: 0;
-        }
-
-        body:not(.mini-navbar) .navbar-static-side,
-        body.body-small:not(.mini-navbar) .navbar-static-side {
-            display: none;
-            width: 220px;
-            position: fixed;
-            z-index: 2001;
-            top: 0;
-            bottom: 0;
-            overflow-y: auto;
-        }
-
-        body.mini-navbar .navbar-static-side,
-        body.body-small.mini-navbar .navbar-static-side {
-            display: block;
-            width: 220px;
-            position: fixed;
-            z-index: 2001;
-            top: 0;
-            bottom: 0;
-            overflow-y: auto;
-        }
-
-        body.mini-navbar #page-wrapper,
+        #page-wrapper,
+        body.body-small #page-wrapper,
         body.body-small.mini-navbar #page-wrapper {
-            margin-left: 0;
+            margin-left: 0 !important;
+            padding-left: 10px;
+            padding-right: 10px;
         }
 
-        body.mini-navbar .profile-element,
-        body.mini-navbar .nav-label,
-        body.mini-navbar .navbar-default .nav li a span {
-            display: inline;
+        .row.border-bottom .navbar {
+            min-height: 54px;
         }
 
-        body.mini-navbar .logo-element {
-            display: none;
+        .navbar-header {
+            display: flex !important;
+            float: none;
+            align-items: center;
         }
 
-        body.mini-navbar .nav-header {
-            padding: 18px 14px;
+        .navbar-top-links {
+            display: flex;
+            justify-content: flex-end;
+            width: 100%;
+            margin: 0;
         }
 
-        body.mini-navbar .navbar-default .nav > li > a {
+        .navbar-top-links li {
+            white-space: nowrap;
+        }
+
+        .navbar-top-links li:first-child {
+            max-width: 44vw;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .navbar-top-links li a,
+        .navbar-top-links li button {
+            padding-left: 8px !important;
+            padding-right: 8px !important;
+        }
+
+        body.body-small .navbar-static-side {
+            display: block !important;
+            width: 260px !important;
+            position: fixed !important;
+            z-index: 2300;
+            top: 0;
+            bottom: 0;
+            left: -260px;
+            overflow-y: auto;
+            background: #2f4050;
+            box-shadow: 0 0 24px rgba(15, 23, 42, .28);
+            transition: left .22s ease;
+        }
+
+        body.body-small.mini-navbar .navbar-static-side {
+            left: 0;
+        }
+
+        body.body-small.mini-navbar:before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, .38);
+            z-index: 2200;
+        }
+
+        body.body-small.mini-navbar .profile-element,
+        body.body-small.mini-navbar .nav-label,
+        body.body-small.mini-navbar .navbar-default .nav li a span {
+            display: inline-block !important;
+        }
+
+        body.body-small.mini-navbar .logo-element {
+            display: none !important;
+        }
+
+        body.body-small.mini-navbar .nav-header {
+            padding: 18px 14px !important;
+            background-size: cover;
+        }
+
+        body.body-small.mini-navbar .navbar-default .nav > li > a {
             font-size: 13px;
-            padding: 12px 18px;
+            padding: 12px 18px !important;
+            display: block;
+            min-height: 0;
+        }
+
+        body.body-small.mini-navbar .nav > li > a i {
+            width: 18px;
+            margin-right: 8px;
+            text-align: center;
+        }
+
+        body.body-small.mini-navbar .nav-second-level {
+            position: static !important;
+            left: auto !important;
+            top: auto !important;
+            width: auto !important;
+            background: #293846;
+            padding: 0;
+            box-shadow: none;
+        }
+
+        body.body-small.mini-navbar .nav-second-level li a {
+            padding: 9px 10px 9px 46px !important;
+            width: auto !important;
+            display: block !important;
+        }
+
+        body.body-small.mini-navbar li.active .nav-second-level {
+            display: block;
         }
 
         .sidebar-brand-logo {
-            min-height: 70px;
+            min-height: 76px;
             padding: 4px 8px 8px;
         }
 
         .sidebar-brand-logo img {
-            width: 150px;
-            max-height: 62px;
+            width: 172px;
+            max-height: 68px;
         }
 
         .sidebar-menu-search {
-            padding: 10px 14px 8px;
+            padding: 12px 16px 8px;
+        }
+
+        .sidebar-menu-search .form-control {
+            background: rgba(255,255,255,.1);
         }
     }
 </style>
