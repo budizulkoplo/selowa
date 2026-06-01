@@ -16,6 +16,25 @@
                     <div class="col-md-3 form-group"><label>Harga Pelanggan</label><input name="customer_price" type="number" min="0" class="form-control" value="{{ old('customer_price', $customer->customer_price ?? 0) }}" required></div>
                 </div>
                 <div class="row">
+                    <div class="col-md-3 form-group">
+                        <label>Member</label>
+                        <div class="checkbox m-t-xs"><label><input type="checkbox" name="is_member" value="1" @checked(old('is_member', $customer->is_member))> Aktifkan diskon member</label></div>
+                    </div>
+                    <div class="col-md-3 form-group">
+                        <label>Tipe Diskon</label>
+                        <select name="discount_type" class="form-control">
+                            <option value="none" @selected(old('discount_type', $customer->discount_type) === 'none')>Tanpa diskon</option>
+                            <option value="amount" @selected(old('discount_type', $customer->discount_type) === 'amount')>Nominal</option>
+                            <option value="percent" @selected(old('discount_type', $customer->discount_type) === 'percent')>Persen</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 form-group"><label>Nilai Diskon</label><input name="discount_value" type="number" min="0" class="form-control" value="{{ old('discount_value', $customer->discount_value ?? 0) }}"></div>
+                    <div class="col-md-3 form-group">
+                        <label>Harga Efektif</label>
+                        <p class="form-control-static">Rp {{ number_format($customer->effectivePrice(), 0, ',', '.') }}</p>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col-md-6 form-group">
                         <label>Alamat</label>
                         <select name="village_id" class="form-control">

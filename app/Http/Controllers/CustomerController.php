@@ -26,7 +26,7 @@ class CustomerController extends Controller
     public function create(): View
     {
         return view('customers.form', [
-            'customer' => new Customer(['is_active' => true]),
+            'customer' => new Customer(['is_active' => true, 'is_member' => false, 'discount_type' => 'none']),
             'villages' => Village::with('district.city')->orderBy('name')->get(),
         ]);
     }
@@ -70,7 +70,15 @@ class CustomerController extends Controller
             'rt' => ['nullable', 'string', 'max:10'],
             'timetable' => ['nullable', 'string', 'max:20'],
             'customer_price' => ['required', 'integer', 'min:0'],
+            'is_member' => ['nullable', 'boolean'],
+            'discount_type' => ['nullable', 'in:none,amount,percent'],
+            'discount_value' => ['nullable', 'integer', 'min:0'],
             'is_active' => ['nullable', 'boolean'],
-        ]) + ['is_active' => false];
+        ]) + [
+            'is_active' => false,
+            'is_member' => false,
+            'discount_type' => 'none',
+            'discount_value' => 0,
+        ];
     }
 }

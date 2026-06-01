@@ -244,6 +244,9 @@
                         $children = $children->filter(fn ($child) => $child->roles()->whereIn('roles.id', $roleIds)->exists());
                     }
                     $active = $menu->route_name ? request()->routeIs($menu->route_name) : false;
+                    if (! $active && $children->isNotEmpty()) {
+                        $active = $children->contains(fn ($child) => $child->route_name && request()->routeIs($child->route_name));
+                    }
                 @endphp
                 <li class="{{ $active ? 'active' : '' }}">
                     <a href="{{ $children->isNotEmpty() ? '#' : $menu->href() }}">

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\DeliveryRun;
 use App\Models\Transaction;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
@@ -22,7 +23,7 @@ class TransactionController extends Controller
             ->where('status', 1);
 
         $transactions = (clone $baseQuery)
-            ->with('customer')
+            ->with(['customer', 'deliveryRun.vehicle'])
             ->orderByDesc('created_at')
             ->paginate(20)
             ->withQueryString();
@@ -31,6 +32,7 @@ class TransactionController extends Controller
             'transactions' => $transactions,
             'month' => $month,
             'customers' => Customer::where('is_active', true)->orderBy('name')->get(),
+            'deliveryRuns' => $this->deliveryRuns(),
             'total' => (clone $baseQuery)->selectRaw('COALESCE(SUM(qty * price), 0) as total')->value('total'),
             'serverNow' => now()->format('Y-m-d\TH:i'),
         ]);
@@ -55,6 +57,7 @@ class TransactionController extends Controller
         return view('transactions.form', [
             'transaction' => $transaction,
             'customers' => Customer::where('is_active', true)->orderBy('name')->get(),
+            'deliveryRuns' => $this->deliveryRuns(),
         ]);
     }
 
@@ -79,10 +82,21 @@ class TransactionController extends Controller
     {
         return $request->validate([
             'customer_id' => ['required', 'exists:customers,id'],
+            'delivery_run_id' => ['nullable', 'exists:delivery_runs,id'],
             'qty' => ['required', 'integer', 'min:1'],
             'price' => ['required', 'integer', 'min:0'],
             'created_at' => ['nullable', 'date'],
             'use_server_time' => ['nullable', 'boolean'],
         ]);
+    }
+
+    private function deliveryRuns()
+    {
+        return DeliveryRun::with('vehicle')
+            ->where('status', 1)
+            ->orderByDesc('run_date')
+            ->orderByDesc('id')
+            ->limit(100)
+            ->get();
     }
 }

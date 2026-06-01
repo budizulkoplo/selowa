@@ -32,7 +32,7 @@ class ExampleTest extends TestCase
 
         $user = User::where('email', 'owner@selowa.local')->firstOrFail();
 
-        foreach (['/', '/company', '/customers', '/customer-addresses', '/transactions', '/income', '/loyal-customers', '/gallons'] as $uri) {
+        foreach (['/', '/profile', '/company', '/customers', '/customers-bulk-price', '/customer-addresses', '/transactions', '/delivery-runs', '/income', '/loyal-customers', '/gallons', '/reports'] as $uri) {
             $this->actingAs($user)->get($uri)->assertStatus(200);
         }
     }

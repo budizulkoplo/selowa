@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Transaction extends Model
 {
-    protected $fillable = ['transaction_code', 'customer_id', 'qty', 'price', 'status', 'created_at'];
+    protected $fillable = ['transaction_code', 'customer_id', 'delivery_run_id', 'qty', 'price', 'status', 'created_at'];
 
     protected function casts(): array
     {
@@ -17,6 +17,11 @@ class Transaction extends Model
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
+    }
+
+    public function deliveryRun(): BelongsTo
+    {
+        return $this->belongsTo(DeliveryRun::class);
     }
 
     public function total(): int

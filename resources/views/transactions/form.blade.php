@@ -9,6 +9,15 @@
         <form method="POST" action="{{ route('transactions.update', $transaction) }}">
             @csrf @method('PUT')
             <div class="form-group"><label>Pelanggan</label><select name="customer_id" class="form-control" required>@foreach($customers as $customer)<option value="{{ $customer->id }}" @selected($transaction->customer_id === $customer->id)>{{ $customer->name }}</option>@endforeach</select></div>
+            <div class="form-group">
+                <label>Mobil Berjalan</label>
+                <select name="delivery_run_id" class="form-control">
+                    <option value="">Tanpa mobil berjalan</option>
+                    @foreach($deliveryRuns as $run)
+                        <option value="{{ $run->id }}" @selected($transaction->delivery_run_id === $run->id)>{{ $run->label() }}</option>
+                    @endforeach
+                </select>
+            </div>
             <div class="row">
                 <div class="col-sm-4 form-group"><label>Qty</label><input name="qty" type="number" min="1" class="form-control" value="{{ $transaction->qty }}" required></div>
                 <div class="col-sm-4 form-group"><label>Harga</label><input name="price" type="number" min="0" class="form-control" value="{{ $transaction->price }}" required></div>

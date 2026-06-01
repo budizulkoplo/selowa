@@ -14,10 +14,11 @@
             <form class="row m-b" method="GET">
                 <div class="col-sm-5"><input name="q" class="form-control" value="{{ request('q') }}" placeholder="Cari nama atau telepon"></div>
                 <div class="col-sm-2"><button class="btn btn-white"><i class="fa fa-search"></i> Cari</button></div>
+                <div class="col-sm-5 text-right"><a href="{{ route('customers.bulk-price.edit') }}" class="btn btn-warning"><i class="fa fa-refresh"></i> Update Harga Serentak</a></div>
             </form>
             <div class="table-responsive">
                 <table class="table table-striped">
-                    <thead><tr><th>Nama</th><th>Telepon</th><th>Alamat</th><th>Jadwal</th><th>Harga</th><th>Status</th><th class="text-right">Aksi</th></tr></thead>
+                    <thead><tr><th>Nama</th><th>Telepon</th><th>Alamat</th><th>Jadwal</th><th>Harga</th><th>Member</th><th>Status</th><th class="text-right">Aksi</th></tr></thead>
                     <tbody>
                         @forelse ($customers as $customer)
                             <tr>
@@ -25,7 +26,13 @@
                                 <td>{{ $customer->phone ?: '-' }}</td>
                                 <td>{{ $customer->addressLabel() }}</td>
                                 <td>{{ $customer->timetable ?: '-' }}</td>
-                                <td>Rp {{ number_format($customer->customer_price, 0, ',', '.') }}</td>
+                                <td>
+                                    Rp {{ number_format($customer->effectivePrice(), 0, ',', '.') }}
+                                    @if ($customer->effectivePrice() !== (int) $customer->customer_price)
+                                        <br><small class="text-muted">Normal Rp {{ number_format($customer->customer_price, 0, ',', '.') }}</small>
+                                    @endif
+                                </td>
+                                <td><span class="label label-{{ $customer->is_member ? 'info' : 'default' }}">{{ $customer->is_member ? 'Member' : 'Reguler' }}</span></td>
                                 <td><span class="label label-{{ $customer->is_active ? 'primary' : 'default' }}">{{ $customer->is_active ? 'Aktif' : 'Nonaktif' }}</span></td>
                                 <td class="text-right">
                                     <a href="{{ route('customers.edit', $customer) }}" class="btn btn-white btn-sm"><i class="fa fa-pencil"></i></a>
@@ -36,7 +43,7 @@
                                 </td>
                             </tr>
                         @empty
-                            <tr><td colspan="7" class="text-center text-muted">Belum ada pelanggan.</td></tr>
+                            <tr><td colspan="8" class="text-center text-muted">Belum ada pelanggan.</td></tr>
                         @endforelse
                     </tbody>
                 </table>

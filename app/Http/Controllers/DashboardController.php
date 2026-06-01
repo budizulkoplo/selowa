@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\DeliveryRun;
 use App\Models\Menu;
 use App\Models\Transaction;
 use Illuminate\View\View;
@@ -23,6 +24,7 @@ class DashboardController extends Controller
                 ['label' => 'Menu Aktif', 'value' => number_format(Menu::where('is_active', true)->count()), 'icon' => 'fa-sitemap', 'color' => 'yellow', 'subtext' => 'navigasi aplikasi'],
             ],
             'customers' => Customer::with('village.district.city')->where('is_active', true)->orderBy('name')->get(),
+            'deliveryRuns' => DeliveryRun::with('vehicle')->where('status', 1)->orderByDesc('run_date')->orderByDesc('id')->limit(100)->get(),
             'serverNow' => now()->format('Y-m-d\TH:i'),
         ]);
     }

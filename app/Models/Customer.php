@@ -8,11 +8,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Customer extends Model
 {
-    protected $fillable = ['village_id', 'name', 'phone', 'rw', 'rt', 'timetable', 'customer_price', 'is_active'];
+    protected $fillable = ['village_id', 'name', 'phone', 'rw', 'rt', 'timetable', 'customer_price', 'is_member', 'discount_type', 'discount_value', 'is_active'];
 
     protected function casts(): array
     {
-        return ['is_active' => 'boolean'];
+        return [
+            'is_active' => 'boolean',
+            'is_member' => 'boolean',
+        ];
     }
 
     public function village(): BelongsTo
@@ -40,5 +43,20 @@ class Customer extends Model
             $village->district?->name,
             $village->district?->city?->name,
         ])->filter(fn ($value) => filled(str_replace(['RT ', 'RW '], '', (string) $value)))->join(', ');
+    }
+
+    public function effectivePrice(): int
+    {
+        $price = (int) $this->customer_price;
+
+        if (! $this->is_member || $this->discount_type === 'none' || $this->discount_value < 1) {
+            return $price;
+        }
+
+        if ($this->discount_type === 'percent') {
+            return max(0, $price - (int) round($price * $this->discount_value / 100));
+        }
+
+        return max(0, $price - (int) $this->discount_value);
     }
 }

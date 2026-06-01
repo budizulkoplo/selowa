@@ -12,17 +12,21 @@ Selowa adalah aplikasi Laravel untuk operasional perusahaan isi ulang air minum.
 ## Modul Awal
 
 - Login menggunakan tabel `users`.
+- Profile user: `/profile`, termasuk update foto, email, nama, dan password.
 - CRUD User: `/users`
 - CRUD Role: `/roles`
 - CRUD Menu: `/menus`
 - Role Menu: `/role-menus`
 - Company: `/company`
 - Pelanggan: `/customers`
+- Update harga pelanggan serentak: `/customers-bulk-price`
 - Alamat Pelanggan: `/customer-addresses`
 - Transaksi: `/transactions`
+- Mobil berjalan: `/delivery-runs`, mendukung lebih dari satu mobil dalam satu hari.
 - Pendapatan: `/income`
 - Pelanggan Setia: `/loyal-customers`
 - Stok Galon: `/gallons`
+- Laporan operasional: `/reports`
 - Dashboard: metrik pelanggan/transaksi/pendapatan, form transaksi cepat, dan tabel pelanggan klik untuk pilih pelanggan.
 
 Role awal:
@@ -46,6 +50,10 @@ User awal:
 - Data legacy dari `D:\selowa.sql` diimport melalui database sementara `selowa_legacy` dengan command `php artisan selowa:import-legacy selowa_legacy`.
 - Tabel legacy yang dimigrasikan: `company`, `cities`, `districts`, `villages`, `customer`, `gallon`, `hd_transaction`.
 - Layout admin memakai pencarian menu di sidebar, DataTables untuk tabel, dan Select2 untuk pilihan data.
+- Menu default: Dashboard, Profile, Data Master, Transaksi, Laporan, Logout, Setting.
+- `Setting` berisi Company, Role, Menu, dan Role Menu.
+- Diskon member disimpan di tabel `customers` melalui kolom `is_member`, `discount_type`, dan `discount_value`; harga transaksi default memakai harga efektif setelah diskon.
+- Pengiriman harian memakai `delivery_vehicles` dan `delivery_runs`; transaksi dapat dihubungkan ke jadwal mobil berjalan.
 
 ## Alur Lanjutan
 

@@ -38,12 +38,21 @@
             <form method="POST" action="{{ route('transactions.store') }}" id="quickTransactionForm" class="m-b">
                 @csrf
                 <div class="row">
-                    <div class="col-md-4 form-group">
+                    <div class="col-md-3 form-group">
                         <label>Pelanggan</label>
                         <select name="customer_id" id="dashboardCustomer" class="form-control select2" required>
                             <option value="">Pilih pelanggan</option>
                             @foreach ($customers as $customer)
-                                <option value="{{ $customer->id }}" data-price="{{ $customer->customer_price }}">{{ $customer->name }} - {{ $customer->phone ?: 'Tanpa telp' }}</option>
+                                <option value="{{ $customer->id }}" data-price="{{ $customer->effectivePrice() }}">{{ $customer->name }} - {{ $customer->phone ?: 'Tanpa telp' }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-2 form-group">
+                        <label>Mobil</label>
+                        <select name="delivery_run_id" class="form-control select2">
+                            <option value="">Opsional</option>
+                            @foreach ($deliveryRuns as $run)
+                                <option value="{{ $run->id }}">{{ $run->label() }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -51,7 +60,7 @@
                         <label>Qty</label>
                         <input name="qty" type="number" min="1" class="form-control" value="1" required>
                     </div>
-                    <div class="col-md-2 form-group">
+                    <div class="col-md-1 form-group">
                         <label>Harga</label>
                         <input name="price" id="dashboardPrice" type="number" min="0" class="form-control" required>
                     </div>
@@ -88,11 +97,11 @@
                         @foreach ($customers as $customer)
                             <tr class="customer-picker-row"
                                 data-customer-id="{{ $customer->id }}"
-                                data-price="{{ $customer->customer_price }}">
+                                data-price="{{ $customer->effectivePrice() }}">
                                 <td>{{ $loop->iteration }}</td>
                                 <td><strong>{{ $customer->name }}</strong></td>
                                 <td>{{ $customer->timetable ?: '-' }}</td>
-                                <td>Rp {{ number_format($customer->customer_price, 0, ',', '.') }}</td>
+                                <td>Rp {{ number_format($customer->effectivePrice(), 0, ',', '.') }}</td>
                                 <td>{{ $customer->phone ?: '-' }}</td>
                                 <td>{{ $customer->village?->district?->city?->name ?: '-' }}</td>
                                 <td>{{ $customer->village?->district?->name ?: '-' }}</td>
