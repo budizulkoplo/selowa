@@ -1,10 +1,12 @@
 <style>
-    body:not(.mini-navbar) .navbar-static-side {
-        width: 260px;
-    }
+    @media (min-width: 769px) {
+        body:not(.mini-navbar) .navbar-static-side {
+            width: 260px;
+        }
 
-    body:not(.mini-navbar) #page-wrapper {
-        margin-left: 260px;
+        body:not(.mini-navbar) #page-wrapper {
+            margin-left: 260px;
+        }
     }
 
     .sidebar-brand-logo {
@@ -56,6 +58,73 @@
         min-height: 16px;
         margin-top: 6px;
         color: #9ea6b3;
+    }
+
+    @media (max-width: 768px) {
+        body:not(.mini-navbar) #page-wrapper,
+        body.body-small:not(.mini-navbar) #page-wrapper {
+            margin-left: 0;
+        }
+
+        body:not(.mini-navbar) .navbar-static-side,
+        body.body-small:not(.mini-navbar) .navbar-static-side {
+            display: none;
+            width: 220px;
+            position: fixed;
+            z-index: 2001;
+            top: 0;
+            bottom: 0;
+            overflow-y: auto;
+        }
+
+        body.mini-navbar .navbar-static-side,
+        body.body-small.mini-navbar .navbar-static-side {
+            display: block;
+            width: 220px;
+            position: fixed;
+            z-index: 2001;
+            top: 0;
+            bottom: 0;
+            overflow-y: auto;
+        }
+
+        body.mini-navbar #page-wrapper,
+        body.body-small.mini-navbar #page-wrapper {
+            margin-left: 0;
+        }
+
+        body.mini-navbar .profile-element,
+        body.mini-navbar .nav-label,
+        body.mini-navbar .navbar-default .nav li a span {
+            display: inline;
+        }
+
+        body.mini-navbar .logo-element {
+            display: none;
+        }
+
+        body.mini-navbar .nav-header {
+            padding: 18px 14px;
+        }
+
+        body.mini-navbar .navbar-default .nav > li > a {
+            font-size: 13px;
+            padding: 12px 18px;
+        }
+
+        .sidebar-brand-logo {
+            min-height: 70px;
+            padding: 4px 8px 8px;
+        }
+
+        .sidebar-brand-logo img {
+            width: 150px;
+            max-height: 62px;
+        }
+
+        .sidebar-menu-search {
+            padding: 10px 14px 8px;
+        }
     }
 </style>
 
