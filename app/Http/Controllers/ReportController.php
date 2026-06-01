@@ -34,13 +34,14 @@ class ReportController extends Controller
                 ->groupBy(DB::raw('DATE(created_at)'))
                 ->orderByDesc('date')
                 ->get(),
-            'customerRows' => Customer::query()
-                ->join('transactions', 'transactions.customer_id', '=', 'customers.id')
+            'customerRows' => Transaction::query()
+                ->leftJoin('customers', 'transactions.customer_id', '=', 'customers.id')
                 ->where('transactions.status', 1)
                 ->whereBetween('transactions.created_at', [$from, $to])
-                ->select('customers.name', 'customers.phone')
+                ->selectRaw('COALESCE(customers.name, transactions.customer_name_snapshot, "Tanpa customer") as name')
+                ->selectRaw('COALESCE(customers.phone, "-") as phone')
                 ->selectRaw('SUM(transactions.qty) as qty_total, SUM(transactions.qty * transactions.price) as income_total')
-                ->groupBy('customers.id', 'customers.name', 'customers.phone')
+                ->groupByRaw('COALESCE(customers.name, transactions.customer_name_snapshot, "Tanpa customer"), COALESCE(customers.phone, "-")')
                 ->orderByDesc('income_total')
                 ->limit(25)
                 ->get(),

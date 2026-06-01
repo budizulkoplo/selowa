@@ -49,6 +49,8 @@ User awal:
 - Logo aplikasi menggunakan `public/selowa.webp`.
 - Data legacy dari `D:\selowa.sql` diimport melalui database sementara `selowa_legacy` dengan command `php artisan selowa:import-legacy selowa_legacy`.
 - Tabel legacy yang dimigrasikan: `company`, `cities`, `districts`, `villages`, `customer`, `gallon`, `hd_transaction`.
+- Data server lama dapat ditarik via web dengan command `php artisan selowa:scrape-legacy --email=... --password=...`; command ini login ke aplikasi lama, scrape halaman customer/transaksi, lalu upsert ke tabel baru berdasarkan ID customer dan kode transaksi.
+- Transaksi hasil scrape menyimpan `customer_name_snapshot` agar nama pelanggan lama tetap tampil ketika ID customer tidak bisa dipetakan karena data lama memiliki nama pelanggan yang kembar.
 - Layout admin memakai pencarian menu di sidebar, DataTables untuk tabel, dan Select2 untuk pilihan data.
 - Menu default: Dashboard, Profile, Data Master, Transaksi, Laporan, Logout, Setting.
 - `Setting` berisi Company, Role, Menu, dan Role Menu.

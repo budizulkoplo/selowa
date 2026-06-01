@@ -32,7 +32,7 @@
                             <tr>
                                 <td>{{ $transaction->created_at?->format('d/m/Y H:i') }}</td>
                                 <td>{{ $transaction->transaction_code }}</td>
-                                <td>{{ $transaction->customer?->name ?: '-' }}</td>
+                                <td>{{ $transaction->customer?->name ?: $transaction->customer_name_snapshot ?: '-' }}</td>
                                 <td>{{ $transaction->deliveryRun?->label() ?: '-' }}</td>
                                 <td>{{ $transaction->qty }}</td>
                                 <td>Rp {{ number_format($transaction->price, 0, ',', '.') }}</td>

@@ -142,6 +142,7 @@ class ImportLegacySelowa extends Command
                 'id' => $row->id,
                 'transaction_code' => $code,
                 'customer_id' => Customer::whereKey($row->customer_id)->exists() ? $row->customer_id : null,
+                'customer_name_snapshot' => Customer::whereKey($row->customer_id)->value('name'),
                 'qty' => (int) $row->qty,
                 'price' => (int) $row->price,
                 'status' => (int) $row->status,

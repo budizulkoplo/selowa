@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         \App\Console\Commands\ImportLegacySelowa::class,
+        \App\Console\Commands\ScrapeLegacySelowa::class,
     ];
 
     /**
