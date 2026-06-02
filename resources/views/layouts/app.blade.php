@@ -32,7 +32,8 @@
         }
 
         .select2-container--open,
-        .select2-dropdown {
+        .select2-dropdown,
+        .select2-container--default.select2-container--open {
             z-index: 20600 !important;
         }
 
@@ -114,6 +115,22 @@
         .ibox-tools .btn-xs {
             padding: 4px 9px;
             line-height: 1.4;
+        }
+
+        @media (max-width: 768px) {
+            body > .select2-container--open {
+                left: 12px !important;
+                right: 12px !important;
+                width: calc(100vw - 24px) !important;
+            }
+
+            body > .select2-container--open .select2-dropdown {
+                width: 100% !important;
+            }
+
+            body > .modal .modal-dialog {
+                margin: 10px;
+            }
         }
     </style>
 
@@ -211,7 +228,7 @@
 
                             $select.select2({
                                 width: '100%',
-                                dropdownParent: $(modal),
+                                dropdownParent: $(document.body),
                                 placeholder: function () {
                                     return $(this).find('option:first').text();
                                 }
@@ -219,13 +236,9 @@
                         });
                     }
 
-                    setTimeout(() => {
-                        const firstInput = modal.querySelector('select, input, textarea, button');
-
-                        if (firstInput) {
-                            firstInput.focus({ preventScroll: true });
-                        }
-                    }, 50);
+                    modal.querySelectorAll('.select2-container').forEach((container) => {
+                        container.style.width = '100%';
+                    });
                 },
                 hide(target) {
                     const modal = typeof target === 'string' ? document.querySelector(target) : target;

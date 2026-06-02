@@ -35,7 +35,9 @@
                                 <td><strong>Rp {{ number_format($transaction->total(), 0, ',', '.') }}</strong></td>
                                 <td class="text-right">
                                     <a href="{{ route('transactions.edit', $transaction) }}" class="btn btn-white btn-sm"><i class="fa fa-pencil"></i></a>
-                                    <form method="POST" action="{{ route('transactions.destroy', $transaction) }}" style="display:inline" onsubmit="return confirm('Batalkan transaksi ini?')">@csrf @method('DELETE')<button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button></form>
+                                    @if (auth()->user()?->hasAnyRole(['owner', 'superadmin']))
+                                        <form method="POST" action="{{ route('transactions.destroy', $transaction) }}" style="display:inline" onsubmit="return confirm('Batalkan transaksi ini?')">@csrf @method('DELETE')<button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button></form>
+                                    @endif
                                 </td>
                             </tr>
                         @empty

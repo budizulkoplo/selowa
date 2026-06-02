@@ -74,6 +74,8 @@ class TransactionController extends Controller
 
     public function destroy(Transaction $transaction): RedirectResponse
     {
+        abort_unless(auth()->user()?->hasAnyRole(['owner', 'superadmin']), 403);
+
         $transaction->update(['status' => 0]);
 
         return back()->with('success', 'Transaksi dibatalkan.');
