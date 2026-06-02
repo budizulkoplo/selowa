@@ -10,8 +10,11 @@ class LoyalCustomerController extends Controller
 {
     public function index(): View
     {
+        $canSeeMonthly = auth()->user()?->hasAnyRole(['owner', 'superadmin']) ?? false;
+
         $transactionSummary = DB::table('transactions')
             ->where('status', 1)
+            ->when(! $canSeeMonthly, fn ($query) => $query->whereBetween('created_at', [now()->startOfDay(), now()->endOfDay()]))
             ->select('customer_id')
             ->selectRaw('COALESCE(SUM(qty), 0) as total_qty')
             ->selectRaw('COALESCE(SUM(qty * price), 0) as total_spend')

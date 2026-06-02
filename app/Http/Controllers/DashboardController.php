@@ -12,15 +12,19 @@ class DashboardController extends Controller
 {
     public function __invoke(): View
     {
-        $startOfMonth = now()->startOfMonth();
-        $endOfMonth = now()->endOfMonth();
+        $canSeeMonthly = auth()->user()?->hasAnyRole(['owner', 'superadmin']) ?? false;
+        $start = $canSeeMonthly ? now()->copy()->startOfMonth() : now()->copy()->startOfDay();
+        $end = $canSeeMonthly ? now()->copy()->endOfMonth() : now()->copy()->endOfDay();
+        $periodLabel = $canSeeMonthly ? now()->translatedFormat('F Y') : now()->translatedFormat('d F Y');
+        $transactionLabel = $canSeeMonthly ? 'Transaksi Bulan Ini' : 'Transaksi Hari Ini';
+        $incomeLabel = $canSeeMonthly ? 'Pendapatan Bulan Ini' : 'Pendapatan Hari Ini';
 
         return view('dashboard.index', [
             'pageTitle' => 'Dashboard Selowa',
             'summaryCards' => [
                 ['label' => 'Pelanggan', 'value' => number_format(Customer::where('is_active', true)->count()), 'icon' => 'fa-address-book', 'color' => 'navy', 'subtext' => 'pelanggan aktif'],
-                ['label' => 'Transaksi Bulan Ini', 'value' => number_format(Transaction::where('status', 1)->whereBetween('created_at', [$startOfMonth, $endOfMonth])->count()), 'icon' => 'fa-shopping-cart', 'color' => 'blue', 'subtext' => now()->translatedFormat('F Y')],
-                ['label' => 'Pendapatan Bulan Ini', 'value' => 'Rp '.number_format((int) Transaction::where('status', 1)->whereBetween('created_at', [$startOfMonth, $endOfMonth])->selectRaw('COALESCE(SUM(qty * price), 0) as total')->value('total'), 0, ',', '.'), 'icon' => 'fa-money', 'color' => 'green', 'subtext' => 'total transaksi aktif'],
+                ['label' => $transactionLabel, 'value' => number_format(Transaction::where('status', 1)->whereBetween('created_at', [$start, $end])->count()), 'icon' => 'fa-shopping-cart', 'color' => 'blue', 'subtext' => $periodLabel],
+                ['label' => $incomeLabel, 'value' => 'Rp '.number_format((int) Transaction::where('status', 1)->whereBetween('created_at', [$start, $end])->selectRaw('COALESCE(SUM(qty * price), 0) as total')->value('total'), 0, ',', '.'), 'icon' => 'fa-money', 'color' => 'green', 'subtext' => 'total transaksi aktif'],
                 ['label' => 'Menu Aktif', 'value' => number_format(Menu::where('is_active', true)->count()), 'icon' => 'fa-sitemap', 'color' => 'yellow', 'subtext' => 'navigasi aplikasi'],
             ],
             'customers' => Customer::with('village.district.city')->where('is_active', true)->orderBy('name')->get(),

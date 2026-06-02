@@ -14,9 +14,10 @@ class TransactionController extends Controller
 {
     public function index(Request $request): View
     {
+        $canSeeMonthly = $this->canSeeMonthly();
         $month = $request->input('month', now()->format('Y-m'));
-        $start = Carbon::createFromFormat('Y-m', $month)->startOfMonth();
-        $end = $start->copy()->endOfMonth();
+        $start = $canSeeMonthly ? Carbon::createFromFormat('Y-m', $month)->startOfMonth() : now()->copy()->startOfDay();
+        $end = $canSeeMonthly ? $start->copy()->endOfMonth() : now()->copy()->endOfDay();
 
         $baseQuery = Transaction::query()
             ->whereBetween('created_at', [$start, $end])
@@ -35,13 +36,17 @@ class TransactionController extends Controller
             'deliveryRuns' => $this->deliveryRuns(),
             'total' => (clone $baseQuery)->selectRaw('COALESCE(SUM(qty * price), 0) as total')->value('total'),
             'serverNow' => now()->format('Y-m-d\TH:i'),
+            'canSeeMonthly' => $canSeeMonthly,
+            'periodLabel' => $canSeeMonthly ? 'Total Bulan Ini' : 'Total Hari Ini',
         ]);
     }
 
     public function store(Request $request): RedirectResponse
     {
         $data = $this->validated($request);
-        $data['created_at'] = $request->boolean('use_server_time') ? now() : ($data['created_at'] ?? now());
+        $data['created_at'] = $this->canSeeMonthly()
+            ? ($request->boolean('use_server_time') ? now() : ($data['created_at'] ?? now()))
+            : now();
         $data['customer_name_snapshot'] = Customer::whereKey($data['customer_id'])->value('name');
         unset($data['use_server_time']);
 
@@ -55,6 +60,8 @@ class TransactionController extends Controller
 
     public function edit(Transaction $transaction): View
     {
+        $this->authorizeTransactionDate($transaction);
+
         return view('transactions.form', [
             'transaction' => $transaction,
             'customers' => Customer::where('is_active', true)->orderBy('name')->get(),
@@ -64,7 +71,12 @@ class TransactionController extends Controller
 
     public function update(Request $request, Transaction $transaction): RedirectResponse
     {
+        $this->authorizeTransactionDate($transaction);
+
         $data = $this->validated($request);
+        if (! $this->canSeeMonthly()) {
+            unset($data['created_at']);
+        }
         unset($data['use_server_time']);
 
         $transaction->update($data);
@@ -110,5 +122,19 @@ class TransactionController extends Controller
             ->orderByDesc('id')
             ->limit(100)
             ->get();
+    }
+
+    private function canSeeMonthly(): bool
+    {
+        return auth()->user()?->hasAnyRole(['owner', 'superadmin']) ?? false;
+    }
+
+    private function authorizeTransactionDate(Transaction $transaction): void
+    {
+        if ($this->canSeeMonthly()) {
+            return;
+        }
+
+        abort_unless($transaction->created_at?->isToday(), 403);
     }
 }

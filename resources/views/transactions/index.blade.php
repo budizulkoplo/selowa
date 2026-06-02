@@ -16,9 +16,13 @@
         </div>
         <div class="ibox-content">
             <form method="GET" class="row m-b">
-                <div class="col-sm-3"><input type="month" name="month" class="form-control" value="{{ $month }}"></div>
-                <div class="col-sm-2"><button class="btn btn-white"><i class="fa fa-filter"></i> Filter</button></div>
-                <div class="col-sm-7 text-right"><h3 class="m-n">Total Bulan Ini: Rp {{ number_format($total, 0, ',', '.') }}</h3></div>
+                @if ($canSeeMonthly)
+                    <div class="col-sm-3"><input type="month" name="month" class="form-control" value="{{ $month }}"></div>
+                    <div class="col-sm-2"><button class="btn btn-white"><i class="fa fa-filter"></i> Filter</button></div>
+                    <div class="col-sm-7 text-right"><h3 class="m-n">{{ $periodLabel }}: Rp {{ number_format($total, 0, ',', '.') }}</h3></div>
+                @else
+                    <div class="col-sm-12 text-right"><h3 class="m-n">{{ $periodLabel }}: Rp {{ number_format($total, 0, ',', '.') }}</h3></div>
+                @endif
             </form>
             <div class="table-responsive">
                 <table class="table table-striped">

@@ -12,8 +12,9 @@ class IncomeController extends Controller
 {
     public function index(Request $request): View
     {
-        $from = $request->date('from') ?: now()->startOfMonth();
-        $to = $request->date('to') ?: now()->endOfMonth();
+        $canFilter = auth()->user()?->hasAnyRole(['owner', 'superadmin']) ?? false;
+        $from = $canFilter ? ($request->date('from') ?: now()->startOfMonth()) : now()->startOfDay();
+        $to = $canFilter ? ($request->date('to') ?: now()->endOfMonth()) : now()->endOfDay();
 
         $rows = Transaction::query()
             ->selectRaw('DATE(created_at) as date, COUNT(*) as transaction_count, SUM(qty) as qty_total, SUM(qty * price) as income_total')
@@ -23,6 +24,6 @@ class IncomeController extends Controller
             ->orderByDesc('date')
             ->get();
 
-        return view('income.index', compact('rows', 'from', 'to'));
+        return view('income.index', compact('rows', 'from', 'to', 'canFilter'));
     }
 }

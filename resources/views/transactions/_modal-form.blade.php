@@ -30,6 +30,7 @@
                             </select>
                         </div>
                     </div>
+                    @php($canSetTransactionTime = auth()->user()?->hasAnyRole(['owner', 'superadmin']))
                     <div class="row">
                         <div class="col-md-4 form-group">
                             <label>Jumlah Galon</label>
@@ -39,14 +40,20 @@
                             <label>Harga Satuan</label>
                             <input name="price" id="{{ $priceInputId }}" type="text" inputmode="numeric" class="form-control money-input" placeholder="0" required>
                         </div>
-                        <div class="col-md-4 form-group">
-                            <label>Waktu Transaksi</label>
-                            <input name="created_at" id="{{ $timeInputId }}" type="datetime-local" class="form-control" value="{{ $serverNow }}">
+                        @if ($canSetTransactionTime)
+                            <div class="col-md-4 form-group">
+                                <label>Waktu Transaksi</label>
+                                <input name="created_at" id="{{ $timeInputId }}" type="datetime-local" class="form-control" value="{{ $serverNow }}">
+                            </div>
+                        @endif
+                    </div>
+                    @if ($canSetTransactionTime)
+                        <div class="checkbox m-t-none">
+                            <label><input type="checkbox" name="use_server_time" id="{{ $useServerId }}" value="1" checked> Gunakan waktu server</label>
                         </div>
-                    </div>
-                    <div class="checkbox m-t-none">
-                        <label><input type="checkbox" name="use_server_time" id="{{ $useServerId }}" value="1" checked> Gunakan waktu server</label>
-                    </div>
+                    @else
+                        <input type="hidden" name="use_server_time" value="1">
+                    @endif
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-white" data-dismiss="modal">Batal</button>
