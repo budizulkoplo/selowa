@@ -10,17 +10,20 @@ class LoyalCustomerController extends Controller
 {
     public function index(): View
     {
+        $transactionSummary = DB::table('transactions')
+            ->where('status', 1)
+            ->select('customer_id')
+            ->selectRaw('COALESCE(SUM(qty), 0) as total_qty')
+            ->selectRaw('COALESCE(SUM(qty * price), 0) as total_spend')
+            ->groupBy('customer_id');
+
         return view('loyal-customers.index', [
             'customers' => Customer::query()
                 ->with('village.district.city')
-                ->leftJoin('transactions', function ($join): void {
-                    $join->on('transactions.customer_id', '=', 'customers.id')->where('transactions.status', 1);
-                })
+                ->joinSub($transactionSummary, 'transaction_summary', fn ($join) => $join->on('transaction_summary.customer_id', '=', 'customers.id'))
                 ->select('customers.*')
-                ->selectRaw('COALESCE(SUM(transactions.qty), 0) as total_qty')
-                ->selectRaw('COALESCE(SUM(transactions.qty * transactions.price), 0) as total_spend')
-                ->groupBy('customers.id')
-                ->havingRaw('total_qty > 0')
+                ->selectRaw('transaction_summary.total_qty')
+                ->selectRaw('transaction_summary.total_spend')
                 ->orderByDesc('total_spend')
                 ->paginate(25),
         ]);
