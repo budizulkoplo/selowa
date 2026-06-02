@@ -6,10 +6,22 @@
 <div class="wrapper wrapper-content animated fadeInRight">
     @include('shared.alerts')
 
+    <div class="dashboard-banner">
+        <div>
+            <span class="dashboard-kicker">Selowa Backoffice</span>
+            <h2>Operasional isi ulang air minum</h2>
+            <p>{{ now()->translatedFormat('l, d F Y') }} - pantau pelanggan, transaksi, pendapatan, dan rute pengiriman dari satu layar.</p>
+        </div>
+        <div class="dashboard-banner-actions">
+            <button type="button" class="btn btn-primary" data-selowa-modal="#dashboardTransactionModal"><i class="fa fa-plus"></i> Input Transaksi</button>
+            <a href="{{ route('reports.index') }}" class="btn btn-white"><i class="fa fa-bar-chart"></i> Laporan</a>
+        </div>
+    </div>
+
     <div class="row">
-        @foreach ($summaryCards as $card)
+        @foreach ($summaryCards as $index => $card)
             <div class="col-lg-3 col-md-6">
-                <div class="ibox">
+                <div class="ibox dashboard-card dashboard-card-{{ $index + 1 }}">
                     <div class="ibox-content">
                         <h5 class="text-muted">{{ $card['label'] }}</h5>
                         <div class="stat-card">
@@ -29,7 +41,7 @@
 
     <div class="ibox">
         <div class="ibox-title">
-            <h5>Buat Transaksi</h5>
+            <h5>Data Pelanggan</h5>
             <div class="ibox-tools">
                 <button type="button" class="btn btn-primary btn-xs" data-selowa-modal="#dashboardTransactionModal"><i class="fa fa-plus"></i> Input Transaksi</button>
                 <a href="{{ route('transactions.index') }}" class="btn btn-white btn-xs"><i class="fa fa-list"></i> Daftar Transaksi</a>
@@ -87,6 +99,57 @@
 @section('scripts')
 @parent
 <style>
+    .dashboard-banner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 18px;
+        padding: 22px 24px;
+        color: #ffffff;
+        background: linear-gradient(135deg, #1167a8 0%, #15958b 58%, #2f4050 100%);
+        border-radius: 6px;
+        box-shadow: 0 10px 24px rgba(47, 64, 80, .16);
+    }
+
+    .dashboard-banner h2 {
+        margin: 4px 0 5px;
+        color: #ffffff;
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+    .dashboard-banner p {
+        margin: 0;
+        color: rgba(255,255,255,.88);
+    }
+
+    .dashboard-kicker {
+        display: inline-block;
+        color: rgba(255,255,255,.78);
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .dashboard-banner-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+    .dashboard-card .ibox-content {
+        border-top: 0;
+        border-left: 4px solid #1ab394;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, .06);
+    }
+
+    .dashboard-card-1 .ibox-content { border-left-color: #1677b9; }
+    .dashboard-card-2 .ibox-content { border-left-color: #0f9aa8; }
+    .dashboard-card-3 .ibox-content { border-left-color: #1f9d66; }
+    .dashboard-card-4 .ibox-content { border-left-color: #d98b13; }
+
     .stat-card {
         display: flex;
         align-items: center;
@@ -107,6 +170,22 @@
 
     .customer-picker-row {
         cursor: pointer;
+    }
+
+    .customer-picker-row:hover {
+        background: #eef7f6 !important;
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-banner {
+            display: block;
+            padding: 18px;
+        }
+
+        .dashboard-banner-actions {
+            justify-content: flex-start;
+            margin-top: 14px;
+        }
     }
 </style>
 <script>

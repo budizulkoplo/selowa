@@ -51,6 +51,70 @@
         .selowa-modal-open {
             overflow: hidden;
         }
+
+        .btn {
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .btn-white {
+            color: #2f4050;
+            background: #ffffff;
+            border-color: #cbd5e1;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, .08);
+        }
+
+        .btn-white:hover,
+        .btn-white:focus {
+            color: #1f2937;
+            background: #f8fafc;
+            border-color: #94a3b8;
+        }
+
+        .btn-primary {
+            background: #1677b9;
+            border-color: #12649d;
+        }
+
+        .btn-primary:hover,
+        .btn-primary:focus {
+            background: #12649d;
+            border-color: #0f5484;
+        }
+
+        .btn-info {
+            background: #0f9aa8;
+            border-color: #0d8390;
+        }
+
+        .btn-success {
+            background: #1f9d66;
+            border-color: #188452;
+        }
+
+        .btn-warning {
+            color: #ffffff;
+            background: #d98b13;
+            border-color: #b9750f;
+        }
+
+        .btn-warning:hover,
+        .btn-warning:focus {
+            color: #ffffff;
+            background: #b9750f;
+            border-color: #965f0c;
+        }
+
+        .btn-danger {
+            background: #d64545;
+            border-color: #bb3535;
+        }
+
+        .ibox-title .btn-xs,
+        .ibox-tools .btn-xs {
+            padding: 4px 9px;
+            line-height: 1.4;
+        }
     </style>
 
 </head>

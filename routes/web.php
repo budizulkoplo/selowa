@@ -41,8 +41,14 @@ Route::middleware('checklogin')->group(function (): void {
     Route::put('/customers-bulk-price', [BulkCustomerPriceController::class, 'update'])->name('customers.bulk-price.update');
     Route::get('/customer-addresses', [CustomerAddressController::class, 'index'])->name('customer-addresses.index');
     Route::post('/customer-addresses/cities', [CustomerAddressController::class, 'storeCity'])->name('customer-addresses.cities.store');
+    Route::put('/customer-addresses/cities/{city}', [CustomerAddressController::class, 'updateCity'])->name('customer-addresses.cities.update');
+    Route::delete('/customer-addresses/cities/{city}', [CustomerAddressController::class, 'destroyCity'])->name('customer-addresses.cities.destroy');
     Route::post('/customer-addresses/districts', [CustomerAddressController::class, 'storeDistrict'])->name('customer-addresses.districts.store');
+    Route::put('/customer-addresses/districts/{district}', [CustomerAddressController::class, 'updateDistrict'])->name('customer-addresses.districts.update');
+    Route::delete('/customer-addresses/districts/{district}', [CustomerAddressController::class, 'destroyDistrict'])->name('customer-addresses.districts.destroy');
     Route::post('/customer-addresses/villages', [CustomerAddressController::class, 'storeVillage'])->name('customer-addresses.villages.store');
+    Route::put('/customer-addresses/villages/{village}', [CustomerAddressController::class, 'updateVillage'])->name('customer-addresses.villages.update');
+    Route::delete('/customer-addresses/villages/{village}', [CustomerAddressController::class, 'destroyVillage'])->name('customer-addresses.villages.destroy');
 
     Route::resource('transactions', TransactionController::class)->except(['show', 'create']);
     Route::get('/delivery-runs', [DeliveryRunController::class, 'index'])->name('delivery-runs.index');
