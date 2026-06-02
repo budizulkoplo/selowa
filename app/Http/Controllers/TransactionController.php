@@ -5,24 +5,18 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use App\Models\DeliveryRun;
 use App\Models\Transaction;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\Response;
 
 class TransactionController extends Controller
 {
     public function index(Request $request): View
     {
-        $canSeeMonthly = $this->canSeeMonthly();
-        $month = $request->input('month', now()->format('Y-m'));
-        $start = $canSeeMonthly ? Carbon::createFromFormat('Y-m', $month)->startOfMonth() : now()->copy()->startOfDay();
-        $end = $canSeeMonthly ? $start->copy()->endOfMonth() : now()->copy()->endOfDay();
-
-        $baseQuery = Transaction::query()
-            ->whereBetween('created_at', [$start, $end])
-            ->where('status', 1)
-            ->when(! $canSeeMonthly, fn ($query) => $query->where('created_by', auth()->id()));
+        [$baseQuery, $month, $canSeeMonthly] = $this->filteredQuery($request);
 
         $transactions = (clone $baseQuery)
             ->with(['customer', 'deliveryRun.vehicle'])
@@ -40,6 +34,31 @@ class TransactionController extends Controller
             'canSeeMonthly' => $canSeeMonthly,
             'periodLabel' => $canSeeMonthly ? 'Total Bulan Ini' : 'Total Hari Ini',
         ]);
+    }
+
+    public function export(Request $request, string $format): Response
+    {
+        [$baseQuery, $month, $canSeeMonthly, $start, $end] = $this->filteredQuery($request);
+        $transactions = (clone $baseQuery)
+            ->with(['customer', 'deliveryRun.vehicle'])
+            ->orderByDesc('created_at')
+            ->get();
+        $filename = 'transaksi-selowa-'.($canSeeMonthly ? $month : now()->format('Y-m-d')).'.'.$this->extension($format);
+        $data = [
+            'title' => 'Data Transaksi',
+            'period' => $start->format('d/m/Y').' - '.$end->format('d/m/Y'),
+            'transactions' => $transactions,
+            'total' => $transactions->sum(fn (Transaction $transaction) => $transaction->total()),
+        ];
+
+        if ($format === 'pdf') {
+            return Pdf::loadView('exports.transactions', $data)->setPaper('a4', 'landscape')->download($filename);
+        }
+
+        return response()
+            ->view('exports.transactions', $data)
+            ->header('Content-Type', 'application/vnd.ms-excel; charset=UTF-8')
+            ->header('Content-Disposition', 'attachment; filename="'.$filename.'"');
     }
 
     public function store(Request $request): RedirectResponse
@@ -129,6 +148,26 @@ class TransactionController extends Controller
     private function canSeeMonthly(): bool
     {
         return auth()->user()?->hasAnyRole(['owner', 'superadmin']) ?? false;
+    }
+
+    private function filteredQuery(Request $request): array
+    {
+        $canSeeMonthly = $this->canSeeMonthly();
+        $month = $request->input('month', now()->format('Y-m'));
+        $start = $canSeeMonthly ? Carbon::createFromFormat('Y-m', $month)->startOfMonth() : now()->copy()->startOfDay();
+        $end = $canSeeMonthly ? $start->copy()->endOfMonth() : now()->copy()->endOfDay();
+
+        $query = Transaction::query()
+            ->whereBetween('created_at', [$start, $end])
+            ->where('status', 1)
+            ->when(! $canSeeMonthly, fn ($query) => $query->where('created_by', auth()->id()));
+
+        return [$query, $month, $canSeeMonthly, $start, $end];
+    }
+
+    private function extension(string $format): string
+    {
+        return $format === 'pdf' ? 'pdf' : 'xls';
     }
 
     private function authorizeTransactionDate(Transaction $transaction): void

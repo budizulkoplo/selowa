@@ -1,20 +1,20 @@
 <?php
 
-use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\BulkCustomerPriceController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CustomerAddressController;
 use App\Http\Controllers\CustomerController;
-use App\Http\Controllers\BulkCustomerPriceController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeliveryRunController;
 use App\Http\Controllers\GallonController;
 use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\LoyalCustomerController;
 use App\Http\Controllers\MenuController;
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\RoleMenuController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\RoleMenuController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -50,6 +50,7 @@ Route::middleware('checklogin')->group(function (): void {
     Route::put('/customer-addresses/villages/{village}', [CustomerAddressController::class, 'updateVillage'])->name('customer-addresses.villages.update');
     Route::delete('/customer-addresses/villages/{village}', [CustomerAddressController::class, 'destroyVillage'])->name('customer-addresses.villages.destroy');
 
+    Route::get('/transactions/export/{format}', [TransactionController::class, 'export'])->whereIn('format', ['excel', 'pdf'])->name('transactions.export');
     Route::resource('transactions', TransactionController::class)->except(['show', 'create']);
     Route::get('/delivery-runs', [DeliveryRunController::class, 'index'])->name('delivery-runs.index');
     Route::post('/delivery-runs/vehicles', [DeliveryRunController::class, 'storeVehicle'])->name('delivery-runs.vehicles.store');
@@ -61,4 +62,5 @@ Route::middleware('checklogin')->group(function (): void {
     Route::get('/loyal-customers', [LoyalCustomerController::class, 'index'])->name('loyal-customers.index');
     Route::resource('gallons', GallonController::class)->only(['index', 'store', 'update', 'destroy']);
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports/export/{section}/{format}', [ReportController::class, 'export'])->whereIn('section', ['daily', 'customers', 'vehicles', 'gallons'])->whereIn('format', ['excel', 'pdf'])->name('reports.export');
 });

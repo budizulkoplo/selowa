@@ -27,7 +27,13 @@
     <div class="row">
         <div class="col-lg-6">
             <div class="ibox">
-                <div class="ibox-title"><h5>Rekap Harian</h5></div>
+                <div class="ibox-title">
+                    <h5>Rekap Harian</h5>
+                    <div class="ibox-tools">
+                        <a href="{{ route('reports.export', ['section' => 'daily', 'format' => 'excel'] + request()->query()) }}" class="btn btn-success btn-xs"><i class="fa fa-file-excel-o"></i> Excel</a>
+                        <a href="{{ route('reports.export', ['section' => 'daily', 'format' => 'pdf'] + request()->query()) }}" class="btn btn-danger btn-xs"><i class="fa fa-file-pdf-o"></i> PDF</a>
+                    </div>
+                </div>
                 <div class="ibox-content">
                     <div class="table-responsive">
                         <table class="table table-striped">
@@ -44,7 +50,13 @@
         </div>
         <div class="col-lg-6">
             <div class="ibox">
-                <div class="ibox-title"><h5>Pelanggan Teratas</h5></div>
+                <div class="ibox-title">
+                    <h5>Pelanggan Teratas</h5>
+                    <div class="ibox-tools">
+                        <a href="{{ route('reports.export', ['section' => 'customers', 'format' => 'excel'] + request()->query()) }}" class="btn btn-success btn-xs"><i class="fa fa-file-excel-o"></i> Excel</a>
+                        <a href="{{ route('reports.export', ['section' => 'customers', 'format' => 'pdf'] + request()->query()) }}" class="btn btn-danger btn-xs"><i class="fa fa-file-pdf-o"></i> PDF</a>
+                    </div>
+                </div>
                 <div class="ibox-content">
                     <div class="table-responsive">
                         <table class="table table-striped">
@@ -64,7 +76,13 @@
     <div class="row">
         <div class="col-lg-7">
             <div class="ibox">
-                <div class="ibox-title"><h5>Laporan Mobil Berjalan</h5></div>
+                <div class="ibox-title">
+                    <h5>Laporan Mobil Berjalan</h5>
+                    <div class="ibox-tools">
+                        <a href="{{ route('reports.export', ['section' => 'vehicles', 'format' => 'excel'] + request()->query()) }}" class="btn btn-success btn-xs"><i class="fa fa-file-excel-o"></i> Excel</a>
+                        <a href="{{ route('reports.export', ['section' => 'vehicles', 'format' => 'pdf'] + request()->query()) }}" class="btn btn-danger btn-xs"><i class="fa fa-file-pdf-o"></i> PDF</a>
+                    </div>
+                </div>
                 <div class="ibox-content">
                     <div class="table-responsive">
                         <table class="table table-striped">
@@ -81,7 +99,13 @@
         </div>
         <div class="col-lg-5">
             <div class="ibox">
-                <div class="ibox-title"><h5>Stok Galon</h5></div>
+                <div class="ibox-title">
+                    <h5>Stok Galon</h5>
+                    <div class="ibox-tools">
+                        <a href="{{ route('reports.export', ['section' => 'gallons', 'format' => 'excel'] + request()->query()) }}" class="btn btn-success btn-xs"><i class="fa fa-file-excel-o"></i> Excel</a>
+                        <a href="{{ route('reports.export', ['section' => 'gallons', 'format' => 'pdf'] + request()->query()) }}" class="btn btn-danger btn-xs"><i class="fa fa-file-pdf-o"></i> PDF</a>
+                    </div>
+                </div>
                 <div class="ibox-content">
                     <div class="table-responsive">
                         <table class="table table-striped">

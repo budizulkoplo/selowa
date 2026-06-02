@@ -2,25 +2,61 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Customer;
 use App\Models\DeliveryRun;
 use App\Models\Gallon;
 use App\Models\Transaction;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\Response;
 
 class ReportController extends Controller
 {
     public function index(Request $request): View
+    {
+        return view('reports.index', $this->reportData($request));
+    }
+
+    public function export(Request $request, string $section, string $format): Response
+    {
+        $data = $this->reportData($request);
+        $sections = [
+            'daily' => ['title' => 'Rekap Harian', 'rows' => $data['dailyRows']],
+            'customers' => ['title' => 'Pelanggan Teratas', 'rows' => $data['customerRows']],
+            'vehicles' => ['title' => 'Laporan Mobil Berjalan', 'rows' => $data['vehicleRows']],
+            'gallons' => ['title' => 'Stok Galon', 'rows' => $data['gallons']],
+        ];
+        abort_unless(isset($sections[$section]), 404);
+
+        $payload = [
+            'section' => $section,
+            'title' => $sections[$section]['title'],
+            'rows' => $sections[$section]['rows'],
+            'from' => $data['from'],
+            'to' => $data['to'],
+        ];
+        $filename = 'laporan-'.str_replace('_', '-', $section).'-'.$data['from']->format('Ymd').'-'.$data['to']->format('Ymd').'.'.$this->extension($format);
+
+        if ($format === 'pdf') {
+            return Pdf::loadView('exports.report-section', $payload)->setPaper('a4', $section === 'vehicles' ? 'landscape' : 'portrait')->download($filename);
+        }
+
+        return response()
+            ->view('exports.report-section', $payload)
+            ->header('Content-Type', 'application/vnd.ms-excel; charset=UTF-8')
+            ->header('Content-Disposition', 'attachment; filename="'.$filename.'"');
+    }
+
+    private function reportData(Request $request): array
     {
         $from = Carbon::parse($request->input('from', now()->startOfMonth()->format('Y-m-d')))->startOfDay();
         $to = Carbon::parse($request->input('to', now()->endOfMonth()->format('Y-m-d')))->endOfDay();
 
         $base = Transaction::where('status', 1)->whereBetween('created_at', [$from, $to]);
 
-        return view('reports.index', [
+        return [
             'from' => $from,
             'to' => $to,
             'summary' => [
@@ -53,6 +89,11 @@ class ReportController extends Controller
                 ->orderByDesc('run_date')
                 ->get(),
             'gallons' => Gallon::orderBy('name')->get(),
-        ]);
+        ];
+    }
+
+    private function extension(string $format): string
+    {
+        return $format === 'pdf' ? 'pdf' : 'xls';
     }
 }

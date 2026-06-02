@@ -9,6 +9,12 @@
         <div class="ibox-title">
             <h5>Transaksi</h5>
             <div class="ibox-tools">
+                <a href="{{ route('transactions.export', ['format' => 'excel'] + request()->query()) }}" class="btn btn-success btn-xs">
+                    <i class="fa fa-file-excel-o"></i> Excel
+                </a>
+                <a href="{{ route('transactions.export', ['format' => 'pdf'] + request()->query()) }}" class="btn btn-danger btn-xs">
+                    <i class="fa fa-file-pdf-o"></i> PDF
+                </a>
                 <button type="button" class="btn btn-primary btn-xs" data-selowa-modal="#transactionModal">
                     <i class="fa fa-plus"></i> Tambah Transaksi
                 </button>

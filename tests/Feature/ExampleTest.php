@@ -12,6 +12,7 @@ use Tests\TestCase;
 class ExampleTest extends TestCase
 {
     use RefreshDatabase;
+
     /**
      * A basic test example.
      */
@@ -36,6 +37,25 @@ class ExampleTest extends TestCase
         $user = User::where('email', 'owner@selowa.local')->firstOrFail();
 
         foreach (['/', '/profile', '/company', '/customers', '/customers-bulk-price', '/customer-addresses', '/transactions', '/delivery-runs', '/income', '/loyal-customers', '/gallons', '/reports'] as $uri) {
+            $this->actingAs($user)->get($uri)->assertStatus(200);
+        }
+    }
+
+    public function test_owner_can_export_transactions_and_reports(): void
+    {
+        $this->seed();
+
+        $user = User::where('email', 'owner@selowa.local')->firstOrFail();
+
+        foreach ([
+            '/transactions/export/excel',
+            '/transactions/export/pdf',
+            '/reports/export/daily/excel',
+            '/reports/export/daily/pdf',
+            '/reports/export/customers/excel',
+            '/reports/export/vehicles/pdf',
+            '/reports/export/gallons/excel',
+        ] as $uri) {
             $this->actingAs($user)->get($uri)->assertStatus(200);
         }
     }
