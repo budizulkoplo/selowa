@@ -15,16 +15,14 @@ class ReportController extends Controller
 {
     public function index(Request $request): View
     {
-        $canFilter = auth()->user()?->hasAnyRole(['owner', 'superadmin']) ?? false;
-        $from = $canFilter ? Carbon::parse($request->input('from', now()->startOfMonth()->format('Y-m-d')))->startOfDay() : now()->copy()->startOfDay();
-        $to = $canFilter ? Carbon::parse($request->input('to', now()->endOfMonth()->format('Y-m-d')))->endOfDay() : now()->copy()->endOfDay();
+        $from = Carbon::parse($request->input('from', now()->startOfMonth()->format('Y-m-d')))->startOfDay();
+        $to = Carbon::parse($request->input('to', now()->endOfMonth()->format('Y-m-d')))->endOfDay();
 
         $base = Transaction::where('status', 1)->whereBetween('created_at', [$from, $to]);
 
         return view('reports.index', [
             'from' => $from,
             'to' => $to,
-            'canFilter' => $canFilter,
             'summary' => [
                 'transactions' => (clone $base)->count(),
                 'qty' => (clone $base)->sum('qty'),

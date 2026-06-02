@@ -21,7 +21,8 @@ class TransactionController extends Controller
 
         $baseQuery = Transaction::query()
             ->whereBetween('created_at', [$start, $end])
-            ->where('status', 1);
+            ->where('status', 1)
+            ->when(! $canSeeMonthly, fn ($query) => $query->where('created_by', auth()->id()));
 
         $transactions = (clone $baseQuery)
             ->with(['customer', 'deliveryRun.vehicle'])
@@ -47,6 +48,7 @@ class TransactionController extends Controller
         $data['created_at'] = $this->canSeeMonthly()
             ? ($request->boolean('use_server_time') ? now() : ($data['created_at'] ?? now()))
             : now();
+        $data['created_by'] = auth()->id();
         $data['customer_name_snapshot'] = Customer::whereKey($data['customer_id'])->value('name');
         unset($data['use_server_time']);
 
@@ -135,6 +137,6 @@ class TransactionController extends Controller
             return;
         }
 
-        abort_unless($transaction->created_at?->isToday(), 403);
+        abort_unless($transaction->created_at?->isToday() && (int) $transaction->created_by === (int) auth()->id(), 403);
     }
 }

@@ -40,7 +40,7 @@ class ExampleTest extends TestCase
         }
     }
 
-    public function test_admin_can_only_edit_today_transactions_and_cannot_delete(): void
+    public function test_admin_can_only_edit_own_today_transactions_and_cannot_delete(): void
     {
         $this->seed();
 
@@ -52,6 +52,14 @@ class ExampleTest extends TestCase
             'is_active' => true,
         ]);
         $admin->assignRole($adminRole);
+        $otherAdmin = User::create([
+            'name' => 'Admin Lain',
+            'email' => 'admin-other@selowa.local',
+            'password' => 'password',
+            'is_active' => true,
+        ]);
+        $otherAdmin->assignRole($adminRole);
+
         $customer = Customer::create(['name' => 'Pelanggan Test', 'customer_price' => 10000, 'is_active' => true]);
 
         $todayTransaction = Transaction::create([
@@ -61,6 +69,17 @@ class ExampleTest extends TestCase
             'price' => 10000,
             'status' => 1,
             'created_at' => now(),
+            'created_by' => $admin->id,
+        ]);
+
+        $otherAdminTransaction = Transaction::create([
+            'transaction_code' => 'TRX-OTHER',
+            'customer_id' => $customer->id,
+            'qty' => 1,
+            'price' => 10000,
+            'status' => 1,
+            'created_at' => now(),
+            'created_by' => $otherAdmin->id,
         ]);
 
         $oldTransaction = Transaction::create([
@@ -70,9 +89,11 @@ class ExampleTest extends TestCase
             'price' => 10000,
             'status' => 1,
             'created_at' => now()->subDay(),
+            'created_by' => $admin->id,
         ]);
 
         $this->actingAs($admin)->get(route('transactions.edit', $todayTransaction))->assertStatus(200);
+        $this->actingAs($admin)->get(route('transactions.edit', $otherAdminTransaction))->assertStatus(403);
         $this->actingAs($admin)->get(route('transactions.edit', $oldTransaction))->assertStatus(403);
         $this->actingAs($admin)->delete(route('transactions.destroy', $todayTransaction))->assertStatus(403);
     }

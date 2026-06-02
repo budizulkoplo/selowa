@@ -18,13 +18,16 @@ class DashboardController extends Controller
         $periodLabel = $canSeeMonthly ? now()->translatedFormat('F Y') : now()->translatedFormat('d F Y');
         $transactionLabel = $canSeeMonthly ? 'Transaksi Bulan Ini' : 'Transaksi Hari Ini';
         $incomeLabel = $canSeeMonthly ? 'Pendapatan Bulan Ini' : 'Pendapatan Hari Ini';
+        $transactionQuery = Transaction::where('status', 1)
+            ->whereBetween('created_at', [$start, $end])
+            ->when(! $canSeeMonthly, fn ($query) => $query->where('created_by', auth()->id()));
 
         return view('dashboard.index', [
             'pageTitle' => 'Dashboard Selowa',
             'summaryCards' => [
                 ['label' => 'Pelanggan', 'value' => number_format(Customer::where('is_active', true)->count()), 'icon' => 'fa-address-book', 'color' => 'navy', 'subtext' => 'pelanggan aktif'],
-                ['label' => $transactionLabel, 'value' => number_format(Transaction::where('status', 1)->whereBetween('created_at', [$start, $end])->count()), 'icon' => 'fa-shopping-cart', 'color' => 'blue', 'subtext' => $periodLabel],
-                ['label' => $incomeLabel, 'value' => 'Rp '.number_format((int) Transaction::where('status', 1)->whereBetween('created_at', [$start, $end])->selectRaw('COALESCE(SUM(qty * price), 0) as total')->value('total'), 0, ',', '.'), 'icon' => 'fa-money', 'color' => 'green', 'subtext' => 'total transaksi aktif'],
+                ['label' => $transactionLabel, 'value' => number_format((clone $transactionQuery)->count()), 'icon' => 'fa-shopping-cart', 'color' => 'blue', 'subtext' => $periodLabel],
+                ['label' => $incomeLabel, 'value' => 'Rp '.number_format((int) (clone $transactionQuery)->selectRaw('COALESCE(SUM(qty * price), 0) as total')->value('total'), 0, ',', '.'), 'icon' => 'fa-money', 'color' => 'green', 'subtext' => 'total transaksi aktif'],
                 ['label' => 'Menu Aktif', 'value' => number_format(Menu::where('is_active', true)->count()), 'icon' => 'fa-sitemap', 'color' => 'yellow', 'subtext' => 'navigasi aplikasi'],
             ],
             'customers' => Customer::with('village.district.city')->where('is_active', true)->orderBy('name')->get(),

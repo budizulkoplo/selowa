@@ -10,13 +10,9 @@
         <div class="ibox-title"><h5>Laporan Operasional</h5></div>
         <div class="ibox-content">
             <form method="GET" class="row m-b">
-                @if ($canFilter)
-                    <div class="col-md-3"><input name="from" type="date" class="form-control" value="{{ $from->toDateString() }}"></div>
-                    <div class="col-md-3"><input name="to" type="date" class="form-control" value="{{ $to->toDateString() }}"></div>
-                    <div class="col-md-2"><button class="btn btn-white"><i class="fa fa-filter"></i> Filter</button></div>
-                @else
-                    <div class="col-md-12"><span class="label label-info">Laporan hari ini: {{ $from->translatedFormat('d F Y') }}</span></div>
-                @endif
+                <div class="col-md-3"><input name="from" type="date" class="form-control" value="{{ $from->toDateString() }}"></div>
+                <div class="col-md-3"><input name="to" type="date" class="form-control" value="{{ $to->toDateString() }}"></div>
+                <div class="col-md-2"><button class="btn btn-white"><i class="fa fa-filter"></i> Filter</button></div>
             </form>
 
             <div class="row">
