@@ -18,7 +18,7 @@
             </form>
             <div class="table-responsive">
                 <table class="table table-striped">
-                    <thead><tr><th>Nama</th><th>Telepon</th><th>Alamat</th><th>Jadwal</th><th>Harga</th><th>Member</th><th>Status</th><th class="text-right">Aksi</th></tr></thead>
+                    <thead><tr><th>Nama</th><th>Telepon</th><th>Alamat</th><th>Jadwal</th><th>Harga</th><th>Member</th><th>Registrasi</th><th>Didaftarkan Oleh</th><th>Status</th><th class="text-right">Aksi</th></tr></thead>
                     <tbody>
                         @forelse ($customers as $customer)
                             <tr>
@@ -33,6 +33,8 @@
                                     @endif
                                 </td>
                                 <td><span class="label label-{{ $customer->is_member ? 'info' : 'default' }}">{{ $customer->is_member ? 'Member' : 'Reguler' }}</span></td>
+                                <td>{{ optional($customer->registered_at ?? $customer->created_at)->format('d/m/Y H:i') ?: '-' }}</td>
+                                <td>{{ $customer->registeredBy?->name ?: '-' }}</td>
                                 <td><span class="label label-{{ $customer->is_active ? 'primary' : 'default' }}">{{ $customer->is_active ? 'Aktif' : 'Nonaktif' }}</span></td>
                                 <td class="text-right">
                                     <a href="{{ route('customers.edit', $customer) }}" class="btn btn-white btn-sm"><i class="fa fa-pencil"></i></a>
@@ -43,7 +45,7 @@
                                 </td>
                             </tr>
                         @empty
-                            <tr><td colspan="8" class="text-center text-muted">Belum ada pelanggan.</td></tr>
+                            <tr><td colspan="10" class="text-center text-muted">Belum ada pelanggan.</td></tr>
                         @endforelse
                     </tbody>
                 </table>

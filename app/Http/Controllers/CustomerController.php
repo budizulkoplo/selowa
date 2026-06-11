@@ -12,7 +12,7 @@ class CustomerController extends Controller
 {
     public function index(Request $request): View
     {
-        $customers = Customer::with('village.district.city')
+        $customers = Customer::with(['village.district.city', 'registeredBy'])
             ->when($request->filled('q'), fn ($query) => $query->where(function ($query) use ($request): void {
                 $query->where('name', 'like', '%'.$request->q.'%')->orWhere('phone', 'like', '%'.$request->q.'%');
             }))
@@ -33,13 +33,18 @@ class CustomerController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        Customer::create($this->validated($request));
+        Customer::create($this->validated($request) + [
+            'registered_at' => now(),
+            'registered_by' => auth()->id(),
+        ]);
 
         return redirect()->route('customers.index')->with('success', 'Pelanggan berhasil ditambahkan.');
     }
 
     public function edit(Customer $customer): View
     {
+        $customer->load('registeredBy');
+
         return view('customers.form', [
             'customer' => $customer,
             'villages' => Village::with('district.city')->orderBy('name')->get(),

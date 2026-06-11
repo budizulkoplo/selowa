@@ -8,13 +8,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Customer extends Model
 {
-    protected $fillable = ['village_id', 'name', 'phone', 'rw', 'rt', 'timetable', 'customer_price', 'is_member', 'discount_type', 'discount_value', 'is_active'];
+    protected $fillable = ['village_id', 'registered_by', 'registered_at', 'name', 'phone', 'rw', 'rt', 'timetable', 'customer_price', 'is_member', 'discount_type', 'discount_value', 'is_active'];
 
     protected function casts(): array
     {
         return [
             'is_active' => 'boolean',
             'is_member' => 'boolean',
+            'registered_at' => 'datetime',
         ];
     }
 
@@ -26,6 +27,11 @@ class Customer extends Model
     public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class);
+    }
+
+    public function registeredBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'registered_by');
     }
 
     public function addressLabel(): string

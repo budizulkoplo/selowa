@@ -8,6 +8,12 @@
     <div class="ibox">
         <div class="ibox-title"><h5>{{ $customer->exists ? 'Edit Pelanggan' : 'Tambah Pelanggan' }}</h5></div>
         <div class="ibox-content">
+            @if($customer->exists)
+                <div class="alert alert-info">
+                    Registrasi: {{ optional($customer->registered_at ?? $customer->created_at)->format('d/m/Y H:i') ?: '-' }}
+                    oleh {{ $customer->registeredBy?->name ?: '-' }}
+                </div>
+            @endif
             <form method="POST" action="{{ $customer->exists ? route('customers.update', $customer) : route('customers.store') }}">
                 @csrf @if($customer->exists) @method('PUT') @endif
                 <div class="row">

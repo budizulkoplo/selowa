@@ -60,6 +60,25 @@ class ExampleTest extends TestCase
         }
     }
 
+    public function test_customer_registration_records_time_and_user(): void
+    {
+        $this->seed();
+
+        $user = User::where('email', 'owner@selowa.local')->firstOrFail();
+
+        $this->actingAs($user)->post(route('customers.store'), [
+            'name' => 'Pelanggan Baru',
+            'phone' => '08123456789',
+            'customer_price' => '12.000',
+            'is_active' => '1',
+        ])->assertRedirect(route('customers.index'));
+
+        $customer = Customer::where('name', 'Pelanggan Baru')->firstOrFail();
+
+        $this->assertSame($user->id, $customer->registered_by);
+        $this->assertNotNull($customer->registered_at);
+    }
+
     public function test_admin_can_only_edit_own_today_transactions_and_cannot_delete(): void
     {
         $this->seed();
