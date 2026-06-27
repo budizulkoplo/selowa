@@ -31,7 +31,7 @@
                 @endif
             </form>
             <div class="table-responsive">
-                <table class="table table-striped">
+                <table class="table table-striped no-datatable">
                     <thead><tr><th>Tanggal</th><th>Kode</th><th>Pelanggan</th><th>Mobil</th><th>Qty</th><th>Harga</th><th>Total</th><th class="text-right">Aksi</th></tr></thead>
                     <tbody>
                         @forelse($transactions as $transaction)

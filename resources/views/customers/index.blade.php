@@ -17,7 +17,7 @@
                 <div class="col-sm-5 text-right"><a href="{{ route('customers.bulk-price.edit') }}" class="btn btn-warning"><i class="fa fa-refresh"></i> Update Harga Serentak</a></div>
             </form>
             <div class="table-responsive">
-                <table class="table table-striped">
+                <table class="table table-striped no-datatable">
                     <thead><tr><th>Nama</th><th>Telepon</th><th>Alamat</th><th>Jadwal</th><th>Harga</th><th>Member</th><th>Registrasi</th><th>Didaftarkan Oleh</th><th>Status</th><th class="text-right">Aksi</th></tr></thead>
                     <tbody>
                         @forelse ($customers as $customer)
