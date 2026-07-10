@@ -70,6 +70,7 @@ class DatabaseSeeder extends Seeder
             Menu::updateOrCreate(['route_name' => 'loyal-customers.index'], ['title' => 'Pelanggan Setia', 'parent_id' => $transaksi->id, 'icon' => 'fa-star', 'sort_order' => 40, 'is_active' => true]),
             Menu::updateOrCreate(['route_name' => 'gallons.index'], ['title' => 'Stok Galon', 'parent_id' => $transaksi->id, 'icon' => 'fa-tint', 'sort_order' => 50, 'is_active' => true]),
             Menu::updateOrCreate(['route_name' => 'reports.index'], ['title' => 'Laporan Operasional', 'parent_id' => $laporan->id, 'icon' => 'fa-line-chart', 'sort_order' => 10, 'is_active' => true]),
+            Menu::updateOrCreate(['route_name' => 'reports.customer-transactions'], ['title' => 'Transaksi per Pelanggan', 'parent_id' => $laporan->id, 'icon' => 'fa-address-card', 'sort_order' => 20, 'is_active' => true]),
             Menu::updateOrCreate(['route_name' => 'company.edit'], ['title' => 'Company', 'parent_id' => $setting->id, 'icon' => 'fa-building', 'sort_order' => 10, 'is_active' => true]),
             Menu::updateOrCreate(['route_name' => 'roles.index'], ['title' => 'Role', 'parent_id' => $setting->id, 'icon' => 'fa-id-badge', 'sort_order' => 20, 'is_active' => true]),
             Menu::updateOrCreate(['route_name' => 'menus.index'], ['title' => 'Menu', 'parent_id' => $setting->id, 'icon' => 'fa-sitemap', 'sort_order' => 30, 'is_active' => true]),

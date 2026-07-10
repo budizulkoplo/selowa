@@ -5,6 +5,7 @@ use App\Http\Controllers\BulkCustomerPriceController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CustomerAddressController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\CustomerTransactionReportController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeliveryRunController;
 use App\Http\Controllers\GallonController;
@@ -62,5 +63,6 @@ Route::middleware('checklogin')->group(function (): void {
     Route::get('/loyal-customers', [LoyalCustomerController::class, 'index'])->name('loyal-customers.index');
     Route::resource('gallons', GallonController::class)->only(['index', 'store', 'update', 'destroy']);
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports/customer-transactions', CustomerTransactionReportController::class)->name('reports.customer-transactions');
     Route::get('/reports/export/{section}/{format}', [ReportController::class, 'export'])->whereIn('section', ['daily', 'customers', 'vehicles', 'gallons'])->whereIn('format', ['excel', 'pdf'])->name('reports.export');
 });
